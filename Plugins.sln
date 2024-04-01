@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatGPT", "ChatGPT\ChatGPT.csproj", "{36C6EFB5-3972-47D5-902A-D01810BF9E8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{95BC0802-770A-4D7E-B6C9-F05A540BFF86}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{36C6EFB5-3972-47D5-902A-D01810BF9E8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C6EFB5-3972-47D5-902A-D01810BF9E8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C6EFB5-3972-47D5-902A-D01810BF9E8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C6EFB5-3972-47D5-902A-D01810BF9E8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95BC0802-770A-4D7E-B6C9-F05A540BFF86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95BC0802-770A-4D7E-B6C9-F05A540BFF86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95BC0802-770A-4D7E-B6C9-F05A540BFF86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95BC0802-770A-4D7E-B6C9-F05A540BFF86}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7492A21-B068-49D4-841D-0E38F3B8CDB9}
+	EndGlobalSection
+EndGlobal
