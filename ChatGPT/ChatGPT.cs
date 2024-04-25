@@ -1,14 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PluginServer;
-using ShamrockCore.Receiver;
-using ShamrockCore.Receiver.Receivers;
 using System.Net.Http.Headers;
 using System.Reactive.Linq;
 using System.Text;
 using System.Xml;
+using UnifyBot.Receiver.MessageReceiver;
 
-namespace ChatGPT
+namespace Plugins
 {
     public class ChatGPT : BasePlugin
     {
@@ -65,7 +64,7 @@ namespace ChatGPT
                 return;
             }
         }
-        public override async Task FriendMessage(FriendReceiver gmr)
+        public override async Task FriendMessage(PrivateReceiver gmr)
         {
             var text = gmr.Message?.GetPlainText();
             if (text?.Contains("#GPT ") ?? false)
@@ -74,7 +73,7 @@ namespace ChatGPT
                 if (gmr.Sender != null)
                 {
                     var answer = await GetAnswer(question, gmr.Sender.QQ.ToString());
-                    await gmr.SendPrivateMsgAsync(answer);
+                    await gmr.SendMessage(answer);
                 }
             }
         }

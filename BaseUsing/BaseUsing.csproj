@@ -4,11 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BaseUsing\BaseUsing.csproj" />
+    <PackageReference Include="PluginServer" Version="1.0.0" />
+    <PackageReference Include="UnifyBot" Version="1.1.5.1" />
   </ItemGroup>
 
 </Project>
