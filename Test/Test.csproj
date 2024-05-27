@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ChatGPT\ChatGPT.csproj" />
+    <ProjectReference Include="..\SpeakWell\SpeakWell.csproj" />
+  </ItemGroup>
+
 </Project>

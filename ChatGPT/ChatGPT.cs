@@ -18,7 +18,7 @@ namespace Plugins
             get
             {
                 XmlDocument doc = new();
-                doc.Load(Config);
+                doc.Load(ConfPath);
                 var node = doc.SelectSingleNode("SecretKey");
                 if (node != null)
                     if (!node.InnerText.Contains("key值"))
@@ -29,13 +29,32 @@ namespace Plugins
         public override string Name { get; set; } = "ChatGPT";
         public override string Desc { get; set; } = "免费的ChatGPT插件";
         public override string Version { get; set; } = "0.0.3";
-        private string Config => ConfPath + "ChatGPT.xml";
-        private string Log => LogPath + "ChatGPT.txt";
+        public override string ConfPath
+        {
+            get
+            {
+                var path = base.ConfPath + "ChatGPT.xml";
+                if (!Directory.Exists(base.ConfPath)) Directory.CreateDirectory(base.ConfPath);
+                return path;
+            }
+            set { }
+        }
+        public override string LogPath
+        {
+            get
+            {
+                var path = base.ConfPath + "ChatGPT.log";
+                if (!Directory.Exists(base.ConfPath)) Directory.CreateDirectory(base.ConfPath);
+                return path;
+            }
+            set { }
+        }
+
         public ChatGPT()
         {
             try
             {
-                if (!File.Exists(Config))
+                if (!File.Exists(ConfPath))
                 {
                     // 创建一个新的 XmlDocument
                     XmlDocument doc = new();
@@ -55,12 +74,12 @@ namespace Plugins
                     // 将注释添加到 Secrets 节点之前
                     secretsNode.ParentNode!.InsertBefore(comment, secretsNode);
 
-                    doc.Save(Config);
+                    doc.Save(ConfPath);
                 }
             }
             catch (Exception e)
             {
-                File.AppendAllLines(Log, [e.Message]);
+                File.AppendAllLines(LogPath, [e.Message]);
                 return;
             }
         }
@@ -149,7 +168,7 @@ namespace Plugins
             }
             catch (Exception e)
             {
-                await File.AppendAllLinesAsync(Log, [e.Message]);
+                await File.AppendAllLinesAsync(LogPath, [e.Message]);
                 return "";
             }
         }

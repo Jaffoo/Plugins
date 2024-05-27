@@ -24,7 +24,7 @@ namespace Plugins
             await gmr.SendMessage(res);
         }
 
-        public static async Task<string> Abbreviations(string words)
+        public async Task<string> Abbreviations(string words)
         {
             try
             {
