@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PluginServer" Version="1.0.7" />
+    <PackageReference Include="UmoBot.PluginServer" Version="2.0.1" />
   </ItemGroup>
 
 </Project>

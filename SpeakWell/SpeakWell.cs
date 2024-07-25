@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using PluginServer;
 using TBC.CommonLib;
+using UmoBot.PluginServer;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace Plugins
@@ -8,11 +8,12 @@ namespace Plugins
     public class SpeakWell : BasePlugin
     {
         public override string Name { get; set; } = "SpeakWell";
-        public override string Desc { get; set; } = "能不能好好说话，缩写查询；输入?yyds即可查询！";
         public override string Version { get; set; } = "0.0.1";
-        public override async Task GroupMessage(GroupReceiver gmr)
+        public override string Desc { get; set; } = "能不能好好说话，缩写查询。";
+        public override string Useage { get; set; } = "打出英文问号+缩写，例如?yyds";
+        public override async Task FriendMessage(PrivateReceiver pr)
         {
-            var text = gmr.Message?.GetPlainText();
+            var text = pr.Message?.GetPlainText();
             if (string.IsNullOrWhiteSpace(text)) return;
             var first = text[..1];
             if (string.IsNullOrWhiteSpace(first)) return;
@@ -21,14 +22,14 @@ namespace Plugins
             if (string.IsNullOrWhiteSpace(pinyin)) return;
             var res = await Abbreviations(pinyin);
             if (string.IsNullOrWhiteSpace(res)) return;
-            await gmr.SendMessage(res);
+            await pr.SendMessage(res);
         }
 
         public async Task<string> Abbreviations(string words)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(words)) return "请输入问题！";
+                if (string.IsNullOrWhiteSpace(words)) return "请输入缩写！";
                 string url = "https://api.pearktrue.cn/api/suoxie/?word=" + words;
                 var response = await Tools.GetAsync(url);
                 var data = response.ToJObject();
