@@ -11,6 +11,7 @@ namespace Plugins
         public override string Version { get; set; } = "0.0.1";
         public override string Desc { get; set; } = "能不能好好说话，缩写查询。";
         public override string Useage { get; set; } = "打出英文问号+缩写，例如?yyds";
+
         public override async Task FriendMessage(PrivateReceiver pr)
         {
             var text = pr.Message?.GetPlainText();
