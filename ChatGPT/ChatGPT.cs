@@ -38,7 +38,7 @@ namespace Plugins
                 return "gpt-4o-mini";
             }
         }
-
+        
         public override string Name { get; set; } = "ChatGPT";
         public override string Desc { get; set; } = "免费的ChatGPT插件";
         public override string Version { get; set; } = "0.0.1";
@@ -130,7 +130,7 @@ namespace Plugins
                 if (mode.IsNullOrWhiteSpace())
                     await gmr.SendMessage("请输入模型");
                 else
-                    await gmr.SendMessage(SaveConfig("Mode", mode));
+                    await gmr.SendMessage(Save("Mode", mode));
 
             }
             if (text.Contains("设置密钥#"))
@@ -139,7 +139,7 @@ namespace Plugins
                 if (key.IsNullOrWhiteSpace())
                     await gmr.SendMessage("请输入密钥");
                 else
-                    await gmr.SendMessage(SaveConfig("SecretKey", key));
+                    await gmr.SendMessage(Save("SecretKey", key));
             }
         }
 
@@ -219,7 +219,7 @@ namespace Plugins
             }
         }
 
-        public string SaveConfig(string key, string value)
+        public string Save(string key, string value)
         {
             XmlDocument doc = new();
             doc.Load(ConfPath);
