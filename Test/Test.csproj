@@ -10,6 +10,8 @@
   <ItemGroup>
     <ProjectReference Include="..\ChatGPT\ChatGPT.csproj" />
     <ProjectReference Include="..\CookBook\CookBook.csproj" />
+    <ProjectReference Include="..\Oli\Oil.csproj" />
+    <ProjectReference Include="..\SixtySeeWorld\SixtySeeWorld.csproj" />
     <ProjectReference Include="..\SpeakWell\SpeakWell.csproj" />
   </ItemGroup>
 

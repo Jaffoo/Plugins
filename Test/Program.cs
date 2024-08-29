@@ -13,7 +13,7 @@ namespace Test
             await bot.StartAsync();
             bot.MessageReceived.OfType<PrivateReceiver>().Subscribe(async x =>
             {
-                await new CookBook().FriendMessage(x);
+                await new Oil().FriendMessage(x);
             });
             while (true)
             {
