@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using TBC.CommonLib;
 using UmoBot.PluginServer;
 using UnifyBot.Message.Chain;
@@ -12,7 +13,7 @@ public class CookBook : BasePlugin
     public override string Name { get; set; } = "CookBook";
     public override string Desc { get; set; } = "菜谱";
     public override string Version { get; set; } = "0.0.1";
-    public override string Useage { get; set; } = "输入【做菜+菜名/菜名+怎么做】";
+    public override string Useage { get; set; } = "输入【菜谱+菜名/菜名+怎么做】";
     public async Task Cook(string name)
     {
         try
@@ -45,29 +46,30 @@ public class CookBook : BasePlugin
             if (string.IsNullOrWhiteSpace(text)) return;
             if (!CookName.IsNullOrWhiteSpace() && text.Contains(CookName) && Menu.Count > 0)
             {
-                var index = text.Replace(CookName, "").ToInt() - 1;
-                var mcb = new MessageChainBuild()
-                    .Text("材料：" + Menu[index].Materials.ListToStr(','))
-                    .Text("\n步骤：\n" + Menu[index].Practice.ListToStr('\n'));
-                await pr.SendMessage(mcb.Build());
-            }
-            else
-            {
-                if (!(text[..2] == "菜谱" || text[^3..] == "怎么做")) return;
-                var name = "";
-                if (text[..2] == "菜谱") name = text.Replace("菜谱", "");
-                if (text[^3..] == "怎么做") name = text.Replace("怎么做", "");
-                CookName = name;
-                await Cook(name);
-                int index = 1;
-                foreach (var item in Menu)
+                var indexStr = text.Replace(CookName, "");
+                if (indexStr.IsNumber())
                 {
-                    var mcb = new MessageChainBuild().Text(index + ".").Text(item.Name).ImageByUrl(item.Image);
+                    var index1 = indexStr.ToInt() - 1;
+                    var mcb = new MessageChainBuild()
+                        .Text("材料：" + Menu[index1].Materials.ListToStr(','))
+                        .Text("\n步骤：\n" + Menu[index1].Practice.ListToStr('\n'));
                     await pr.SendMessage(mcb.Build());
-                    index++;
                 }
             }
 
+            if (!(text[..2] == "菜谱" || text[^3..] == "怎么做")) return;
+            var name = "";
+            if (text[..2] == "菜谱") name = text.Replace("菜谱", "");
+            if (text[^3..] == "怎么做") name = text.Replace("怎么做", "");
+            CookName = name;
+            await Cook(name);
+            int index = 1;
+            foreach (var item in Menu)
+            {
+                var mcb = new MessageChainBuild().Text(index + ".").Text(item.Name).ImageByUrl(item.Image);
+                await pr.SendMessage(mcb.Build());
+                index++;
+            }
         }
         catch (Exception)
         {
