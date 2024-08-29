@@ -1,13 +1,24 @@
 ﻿using Plugins;
+using System.Reactive.Linq;
+using UnifyBot;
+using UnifyBot.Receiver.MessageReceiver;
 
 namespace Test
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main()
         {
-            var chat = new ChatGPT();
-            Console.ReadKey();
+            Bot bot = new(new("192.168.1.101", 3001, 3000, "523366"));
+            await bot.StartAsync();
+            bot.MessageReceived.OfType<PrivateReceiver>().Subscribe(async x =>
+            {
+                await new CookBook().FriendMessage(x);
+            });
+            while (true)
+            {
+                Thread.Sleep(10);
+            }
         }
     }
 }
