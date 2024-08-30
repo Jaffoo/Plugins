@@ -9,7 +9,7 @@ public class SixtySeeWorld : BasePlugin
     public override string Name { get; set; } = "SixtySeeWorld";
     public override string Desc { get; set; } = "60s看世界";
     public override string Version { get; set; } = "0.0.1";
-    public override string Useage { get; set; } = "每日9点定时发送";
+    public override string Useage { get; set; } = "每日9点定时发送，输入指令看世界+qq添加，取消看世界+qq删除，今日资讯获取";
     public override string ConfPath
     {
         get
@@ -54,6 +54,10 @@ public class SixtySeeWorld : BasePlugin
     {
         var text = gmr.Message?.GetPlainText();
         if (string.IsNullOrWhiteSpace(text)) return;
+        if (text == "今日资讯")
+        {
+            await GetImage();
+        }
         if (text[..3] == "看世界")
         {
             var qq = text[3..];
@@ -64,6 +68,7 @@ public class SixtySeeWorld : BasePlugin
                 list.Add(qq);
                 File.WriteAllText(ConfPath, list.ListToStr());
             }
+            await gmr.SendMessage("已添加");
         }
         if (text[..5] == "取消看世界")
         {
@@ -73,6 +78,7 @@ public class SixtySeeWorld : BasePlugin
             list.Remove(qq);
             await File.WriteAllTextAsync(ConfPath, list.ListToStr());
         }
+        await gmr.SendMessage("已删除");
     }
 }
 
