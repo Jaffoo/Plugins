@@ -1,9 +1,5 @@
-﻿using FluentScheduler;
-using Newtonsoft.Json;
-using System;
-using TBC.CommonLib;
+﻿using TBC.CommonLib;
 using UmoBot.PluginServer;
-using UnifyBot.Message;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 
@@ -14,16 +10,27 @@ public class SixtySeeWorld : BasePlugin
     public override string Desc { get; set; } = "60s看世界";
     public override string Version { get; set; } = "0.0.1";
     public override string Useage { get; set; } = "每日9点定时发送";
+    public override string ConfPath
+    {
+        get
+        {
+            var path = base.ConfPath + "SixtySeeWorld.txt";
+            if (!Directory.Exists(base.ConfPath)) Directory.CreateDirectory(base.ConfPath);
+            return path;
+        }
+        set { }
+    }
     public SixtySeeWorld()
     {
+        if (!File.Exists(ConfPath)) File.Create(ConfPath);
         SetTimer(async () => await GetImage(), x => x.WithName("SixtySeeWorld").ToRunEvery(9).Hours());
     }
-    public async Task<string> GetImage()
+    public async Task GetImage()
     {
         try
         {
             string url = "https://api.pearktrue.cn/api/60s/image/";
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             // 发送 GET 请求
             HttpResponseMessage response = await client.GetAsync(url);
 
@@ -32,14 +39,39 @@ public class SixtySeeWorld : BasePlugin
 
             // 读取响应内容为字节数组
             byte[] imageBytes = await response.Content.ReadAsByteArrayAsync();
-
-            // 将字节数组写入文件
-            await File.WriteAllBytesAsync("60.png", imageBytes);
-            return "60.png";
+            var b64 = "base64://" + Convert.ToBase64String(imageBytes);
+            var qqStr = File.ReadAllText(ConfPath);
+            if (qqStr.IsNullOrWhiteSpace()) return;
+            var qq = qqStr.ToListInt<long>();
+            foreach (var item in qq)
+                await SendPrivateMsg(item, new MessageChainBuild().ImageByBase64(b64).Build());
         }
         catch (Exception)
         {
-            return "";
+        }
+    }
+    public override async Task FriendMessage(PrivateReceiver gmr)
+    {
+        var text = gmr.Message?.GetPlainText();
+        if (string.IsNullOrWhiteSpace(text)) return;
+        if (text[..3] == "看世界")
+        {
+            var qq = text[3..];
+            var str = await File.ReadAllTextAsync(ConfPath);
+            var list = str.IsNullOrWhiteSpace() ? [] : str.ToListStr();
+            if (!list.Contains(qq))
+            {
+                list.Add(qq);
+                File.WriteAllText(ConfPath, list.ListToStr());
+            }
+        }
+        if (text[..5] == "取消看世界")
+        {
+            var qq = text[5..];
+            var str = await File.ReadAllTextAsync(ConfPath);
+            var list = str.IsNullOrWhiteSpace() ? [] : str.ToListStr();
+            list.Remove(qq);
+            await File.WriteAllTextAsync(ConfPath, list.ListToStr());
         }
     }
 }
