@@ -77,8 +77,8 @@ public class SixtySeeWorld : BasePlugin
             var list = str.IsNullOrWhiteSpace() ? [] : str.ToListStr();
             list.Remove(qq);
             await File.WriteAllTextAsync(ConfPath, list.ListToStr());
+            await gmr.SendMessage("已删除");
         }
-        await gmr.SendMessage("已删除");
     }
 }
 
