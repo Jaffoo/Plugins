@@ -23,7 +23,7 @@ public class SixtySeeWorld : BasePlugin
     public SixtySeeWorld()
     {
         if (!File.Exists(ConfPath)) File.Create(ConfPath);
-        SetTimer(async () => await GetImage(), x => x.WithName("SixtySeeWorld").ToRunEvery(9).Hours());
+        SetTimer(async () => await GetImage(), x => x.WithName("SixtySeeWorld").ToRunOnceAt(9, 30).AndEvery(1).Days().At(9, 30));
     }
     public async Task GetImage()
     {
