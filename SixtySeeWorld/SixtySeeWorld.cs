@@ -1,4 +1,6 @@
-﻿using TBC.CommonLib;
+﻿using FluentScheduler;
+using SqlSugar;
+using TBC.CommonLib;
 using UmoBot.PluginServer;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
@@ -23,9 +25,9 @@ public class SixtySeeWorld : BasePlugin
     public SixtySeeWorld()
     {
         if (!File.Exists(ConfPath)) File.Create(ConfPath);
-        SetTimer(async () => await GetImage(), x => x.WithName("SixtySeeWorld").ToRunOnceAt(9, 30).AndEvery(1).Days().At(9, 30));
+        SetTimer("SixtySeeWorld", async () => await GetImage(), x => x.WithName("SixtySeeWorld").ToRunEvery(1).Days().At(9, 30));
     }
-    public async Task GetImage()
+    public async Task GetImage(long senderQQ = 0)
     {
         try
         {
@@ -43,8 +45,11 @@ public class SixtySeeWorld : BasePlugin
             var qqStr = File.ReadAllText(ConfPath);
             if (qqStr.IsNullOrWhiteSpace()) return;
             var qq = qqStr.ToListInt<long>();
-            foreach (var item in qq)
-                await SendPrivateMsg(item, new MessageChainBuild().ImageByBase64(b64).Build());
+            if (senderQQ > 0 && qq.Contains(senderQQ))
+                await SendPrivateMsg(senderQQ, new MessageChainBuild().ImageByBase64(b64).Build());
+            else
+                foreach (var item in qq)
+                    await SendPrivateMsg(item, new MessageChainBuild().ImageByBase64(b64).Build());
         }
         catch (Exception)
         {
@@ -56,7 +61,7 @@ public class SixtySeeWorld : BasePlugin
         if (string.IsNullOrWhiteSpace(text)) return;
         if (text == "今日资讯")
         {
-            await GetImage();
+            await GetImage(gmr.SenderQQ);
         }
         if (text[..3] == "看世界")
         {
