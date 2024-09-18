@@ -1,7 +1,7 @@
 ﻿using FluentScheduler;
 using SqlSugar;
 using TBC.CommonLib;
-using UmoBot.PluginServer;
+using PluginServer;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 

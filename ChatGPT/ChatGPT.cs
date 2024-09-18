@@ -5,7 +5,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Xml;
 using TBC.CommonLib;
-using UmoBot.PluginServer;
+using PluginServer;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace Plugins;

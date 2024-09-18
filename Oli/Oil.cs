@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using TBC.CommonLib;
-using UmoBot.PluginServer;
+using PluginServer;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 
