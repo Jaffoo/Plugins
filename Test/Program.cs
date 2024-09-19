@@ -9,7 +9,7 @@ namespace Test
     {
         static async Task Main()
         {
-            new ChatGPT().GetAnswer("123","123");
+            await new DouYu().CheckLiveV2("9999");
             Bot bot = new(new("www.zink.asia", 3001, 3000));
             await bot.StartAsync();
             bot.MessageReceived.OfType<PrivateReceiver>().Subscribe(async x =>
