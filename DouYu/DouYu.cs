@@ -10,7 +10,7 @@ public class DouYu : BasePlugin
     public override string Name { get; set; } = "DouYuLive";
     public override string Version { get; set; } = "0.0.1";
     public override string Desc { get; set; } = "直播查询";
-    public override string Useage { get; set; } = "输入【查询斗鱼+房间号】，例如查询斗鱼111";
+    public override string Useage { get; set; } = "输入【斗鱼直播+房间号】，例如斗鱼直播111";
 
     public async Task<MessageChain?> CheckLive(string roomid)
     {
@@ -35,7 +35,7 @@ public class DouYu : BasePlugin
     {
         var text = fmr.Message?.GetPlainText();
         if (string.IsNullOrWhiteSpace(text)) return;
-        if (text.Length > 4 && text[..4] == "查询斗鱼")
+        if (text.Length > 4 && text[..4] == "斗鱼直播")
         {
             var roomId = text[4..];
             var msg = await CheckLive(roomId);
