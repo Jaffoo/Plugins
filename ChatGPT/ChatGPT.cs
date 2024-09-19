@@ -9,7 +9,7 @@ using PluginServer;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace Plugins;
-    public class ChatGPT : BasePlugin
+public class ChatGPT : BasePlugin
 {
 
     public static Dictionary<string, List<object>> LastMsg = new();

@@ -50,7 +50,7 @@ public class Oil : BasePlugin
         {
             var text = pr.Message?.GetPlainText();
             if (string.IsNullOrWhiteSpace(text)) return;
-            if (text[..4] != "今日油价") return;
+            if (text.Length <= 4 || text[..4] != "今日油价") return;
             var province = text[4..].Trim();
             await pr.SendMessage(await OilProvince(province));
         }

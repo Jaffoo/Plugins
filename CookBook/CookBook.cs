@@ -57,7 +57,7 @@ public class CookBook : BasePlugin
                 }
             }
 
-            if (!(text[..2] == "菜谱" || text[^3..] == "怎么做")) return;
+            if (!(text.Contains("菜谱") || text.Contains("怎么做"))) return;
             var name = "";
             if (text[..2] == "菜谱") name = text.Replace("菜谱", "");
             if (text[^3..] == "怎么做") name = text.Replace("怎么做", "");

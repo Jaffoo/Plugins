@@ -63,7 +63,7 @@ public class SixtySeeWorld : BasePlugin
         {
             await GetImage(gmr.SenderQQ);
         }
-        if (text[..3] == "看世界")
+        if (text.Length > 3 && text[..3] == "看世界")
         {
             var qq = text[3..];
             var str = await File.ReadAllTextAsync(ConfPath);
@@ -75,7 +75,7 @@ public class SixtySeeWorld : BasePlugin
             }
             await gmr.SendMessage("已添加");
         }
-        if (text[..5] == "取消看世界")
+        if (text.Length > 5 && text[..5] == "取消看世界")
         {
             var qq = text[5..];
             var str = await File.ReadAllTextAsync(ConfPath);
