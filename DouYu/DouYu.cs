@@ -11,6 +11,7 @@ public class DouYu : BasePlugin
     public override string Version { get; set; } = "0.0.1";
     public override string Desc { get; set; } = "直播查询";
     public override string Useage { get; set; } = "输入【斗鱼直播+房间号】，例如斗鱼直播111";
+    public override string LogPath { get => base.LogPath + "DouYu.log"; set => base.LogPath = value; }
 
     public DouYu()
     {
@@ -42,6 +43,9 @@ public class DouYu : BasePlugin
         if (!isLive) return null;
         var liveTimeSpan = room.Fetch<long>("show_time");
         var timeDifference = DateTime.Now.ToTimeStamp();
+        File.AppendText("\n开播时间：" + liveTimeSpan);
+        File.AppendText("\n当前时间：" + DateTime.Now.ToTimeStamp());
+        File.AppendText("\n时间差：" + timeDifference);
         if (timeDifference >= 60)
         {
             return null;
