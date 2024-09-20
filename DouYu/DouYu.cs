@@ -42,10 +42,13 @@ public class DouYu : BasePlugin
         if (loop == 1) isLive = false;
         if (!isLive) return null;
         var liveTimeSpan = room.Fetch<long>("show_time");
-        var timeDifference = DateTime.Now.ToTimeStamp();
-        File.AppendText("\n开播时间：" + liveTimeSpan);
-        File.AppendText("\n当前时间：" + DateTime.Now.ToTimeStamp());
-        File.AppendText("\n时间差：" + timeDifference);
+        var timeDifference = Math.Abs(DateTime.Now.ToTimeStamp(false) - liveTimeSpan);
+        File.AppendAllLines(LogPath, ["-----------------------------"]);
+        File.AppendAllLines(LogPath, ["主播：" + room.Fetch("nickname")]);
+        File.AppendAllLines(LogPath, ["开播时间：" + liveTimeSpan]);
+        File.AppendAllLines(LogPath, ["当前时间：" + DateTime.Now.ToTimeStamp()]);
+        File.AppendAllLines(LogPath, ["时间差：" + timeDifference]);
+        File.AppendAllLines(LogPath, ["-----------------------------"]);
         if (timeDifference >= 60)
         {
             return null;
@@ -66,11 +69,18 @@ public class DouYu : BasePlugin
         var isLive = room.Fetch<int>("show_status") == 1;
         var loop = room.Fetch<int>("videoLoop");
         if (loop == 1) isLive = false;
-        if (!isLive) return null;
         var msg = new MessageChainBuild();
-        msg.Text("主播：" + room.Fetch("nickname") + "正在直播");
-        msg.Text("\n标题：" + room.Fetch("room_name"));
-        msg.Text("\n封面：").ImageByUrl(room.Fetch("room_pic"));
+        if (!isLive)
+        {
+            msg.Text("主播" + room.Fetch("nickname") + "暂未开播");
+        }
+        else
+        {
+            msg.Text("主播：" + room.Fetch("nickname") + "正在直播");
+            msg.Text("\n标题：" + room.Fetch("room_name"));
+            msg.Text("\n开播时间：" + Tools.TimeStampToDate(room.Fetch("show_time"), 10));
+            msg.Text("\n封面：").ImageByUrl(room.Fetch("room_pic"));
+        }
         return msg.Build();
     }
 

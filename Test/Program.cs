@@ -1,5 +1,6 @@
 ﻿using Plugins;
 using System.Reactive.Linq;
+using TBC.CommonLib;
 using UnifyBot;
 using UnifyBot.Receiver.MessageReceiver;
 
@@ -9,6 +10,7 @@ namespace Test
     {
         static async Task Main()
         {
+            var timeDifference = DateTime.Now.ToTimeStamp(false);
             await new DouYu().CheckLiveV2("9999");
             Bot bot = new(new("www.zink.asia", 3001, 3000));
             await bot.StartAsync();
