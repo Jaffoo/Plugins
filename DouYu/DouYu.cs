@@ -95,6 +95,15 @@ public class DouYu : BasePlugin
             if (msg == null) return;
             await fmr.SendMessage(msg);
         }
+        if (text == "斗鱼关注")
+        {
+            var roomIdStr = await GetConfig("RoomId");
+            if (roomIdStr != null)
+            {
+                await fmr.SendMessage(roomIdStr);
+            }
+
+        }
         if (text.Length > 4 && text[..4] == "斗鱼关注")
         {
             var roomId = text[4..];
