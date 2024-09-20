@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PluginServer" Version="2.1.0" />
+    <PackageReference Include="PluginServer" Version="2.1.1" />
   </ItemGroup>
 
 </Project>

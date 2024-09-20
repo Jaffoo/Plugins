@@ -44,7 +44,7 @@ public class SixtySeeWorld : BasePlugin
             var b64 = "base64://" + Convert.ToBase64String(imageBytes);
             var qqStr = File.ReadAllText(ConfPath);
             if (qqStr.IsNullOrWhiteSpace()) return;
-            var qq = qqStr.ToListInt<long>();
+            var qq = qqStr.ToListInt().Select(x => x.ToLong()).ToList();
             if (senderQQ > 0 && qq.Contains(senderQQ))
                 await SendPrivateMsg(senderQQ, new MessageChainBuild().ImageByBase64(b64).Build());
             else

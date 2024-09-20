@@ -78,7 +78,7 @@ public class DouYu : BasePlugin
         {
             msg.Text("主播：" + room.Fetch("nickname") + "正在直播");
             msg.Text("\n标题：" + room.Fetch("room_name"));
-            msg.Text("\n开播时间：" + Tools.TimeStampToDate(room.Fetch("show_time"), 10));
+            msg.Text("\n开播时间：" + Tools.TimeStampToDate(room.Fetch("show_time")));
             msg.Text("\n封面：").ImageByUrl(room.Fetch("room_pic"));
         }
         return msg.Build();
