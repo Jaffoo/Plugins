@@ -35,7 +35,14 @@ public class DouYu : BasePlugin
         {
             var res = await CheckLiveV2(item);
             if (res != null)
-                await SendPrivateMsg(1615842006, res);
+            {
+                var qqs = await GetConfig("Users");
+                var list = qqs.ToListStr().Select(x => x.ToLong());
+                foreach (var qq in list)
+                {
+                    await SendPrivateMsg(qq, res);
+                }
+            }
         }
     }
 
@@ -112,6 +119,24 @@ public class DouYu : BasePlugin
                 await fmr.SendMessage(roomIdStr);
             }
 
+        }
+        if (text.Length > 4 && text[..4] == "斗鱼通知")
+        {
+            var qq = text[4..];
+            var qqs = await GetConfig("Users");
+            var list = qqs.IsNullOrWhiteSpace() ? [] : qqs.ToListStr();
+            if (!list.Contains(qq))
+            {
+                list.Add(qq);
+                _ = await SaveConfig("Users", list.ListToStr());
+                await fmr.SendMessage("添加成功");
+            }
+            else
+            {
+                list.Remove(qq);
+                _ = await SaveConfig("Users", list.ListToStr());
+                await fmr.SendMessage("删除成功");
+            }
         }
         if (text.Length > 4 && text[..4] == "斗鱼关注")
         {
