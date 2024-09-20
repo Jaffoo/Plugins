@@ -11,7 +11,15 @@ public class DouYu : BasePlugin
     public override string Version { get; set; } = "0.0.1";
     public override string Desc { get; set; } = "直播查询";
     public override string Useage { get; set; } = "输入【斗鱼直播+房间号】，例如斗鱼直播111";
-    public override string LogPath { get => base.LogPath + "/DouYu.log"; set => base.LogPath = value; }
+    public override string LogPath
+    {
+        get
+        {
+            if (!Directory.Exists(base.ConfPath)) Directory.CreateDirectory(base.ConfPath);
+            return base.LogPath + "/DouYu.log";
+        }
+        set => base.LogPath = value;
+    }
 
     public DouYu()
     {
