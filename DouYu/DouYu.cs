@@ -16,7 +16,9 @@ public class DouYu : BasePlugin
         get
         {
             if (!Directory.Exists(base.ConfPath)) Directory.CreateDirectory(base.ConfPath);
-            return base.LogPath + "/DouYu.log";
+            var path = base.LogPath + "/DouYu.log";
+            if (!File.Exists(path)) File.Create(path);
+            return path;
         }
         set => base.LogPath = value;
     }
@@ -33,6 +35,8 @@ public class DouYu : BasePlugin
         var roomList = idsStr.Split(',').ToList();
         foreach (var item in roomList)
         {
+            File.AppendAllLines(LogPath, ["-----------------------------"]);
+            File.AppendAllLines(LogPath, ["房间id：" + item]);
             var res = await CheckLiveV2(item);
             if (res != null)
             {
@@ -58,7 +62,6 @@ public class DouYu : BasePlugin
         if (!isLive) return null;
         var liveTimeSpan = room.Fetch<long>("show_time");
         var timeDifference = Math.Abs(DateTime.Now.ToTimeStamp(false) - liveTimeSpan);
-        File.AppendAllLines(LogPath, ["-----------------------------"]);
         File.AppendAllLines(LogPath, ["主播：" + room.Fetch("nickname")]);
         File.AppendAllLines(LogPath, ["开播时间：" + liveTimeSpan]);
         File.AppendAllLines(LogPath, ["当前时间：" + DateTime.Now.ToTimeStamp()]);
