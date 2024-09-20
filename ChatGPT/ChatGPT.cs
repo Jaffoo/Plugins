@@ -82,7 +82,7 @@ public class ChatGPT : BasePlugin
 
                 // 创建 Secrets 节点
                 XmlElement secretsNode = doc.CreateElement("SecretKey");
-                secretsNode.InnerText = "key值填入这，填入前请删除内容";
+                secretsNode.InnerText = "";
                 rootNode.AppendChild(secretsNode); // 添加到根节点下
 
                 // 创建注释

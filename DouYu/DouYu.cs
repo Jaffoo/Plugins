@@ -11,7 +11,7 @@ public class DouYu : BasePlugin
     public override string Version { get; set; } = "0.0.1";
     public override string Desc { get; set; } = "直播查询";
     public override string Useage { get; set; } = "输入【斗鱼直播+房间号】，例如斗鱼直播111";
-    public override string LogPath { get => base.LogPath + "DouYu.log"; set => base.LogPath = value; }
+    public override string LogPath { get => base.LogPath + "/DouYu.log"; set => base.LogPath = value; }
 
     public DouYu()
     {
@@ -100,7 +100,7 @@ public class DouYu : BasePlugin
             var roomId = text[4..];
             var roomIdStr = await GetConfig("RoomId");
             var list = string.IsNullOrWhiteSpace(roomIdStr) ? [] : roomIdStr.Split(",").ToList();
-            list.Add(roomId);
+            if (!list.Contains(roomId)) list.Add(roomId);
             var b = await SaveConfig("RoomId", string.Join(",", list));
             await fmr.SendMessage(b ? "添加成功" : "添加失败");
         }
