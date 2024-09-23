@@ -14,7 +14,7 @@ public class DouYu : BasePlugin
 
     public DouYu()
     {
-        SetTimer("DouYu", async () => await CheckLiveTimer(), x => x.WithName("DouYu").ToRunEvery(1).Minutes());
+        SetTimer("DouYu", async () => await CheckLiveTimer(), x => x.WithName("DouYu").ToRunEvery(3).Minutes());
     }
 
     public async Task CheckLiveTimer()
@@ -49,7 +49,7 @@ public class DouYu : BasePlugin
         if (!isLive) return null;
         var liveTimeSpan = room.Fetch<long>("show_time");
         var timeDifference = Math.Abs(DateTime.Now.ToTimeStamp() - liveTimeSpan);
-        if (timeDifference >= 60)
+        if (timeDifference >= 180)
         {
             return null;
         }
