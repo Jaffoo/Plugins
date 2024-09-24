@@ -10,6 +10,7 @@ namespace Test
     {
         static async Task Main()
         {
+            var a =await new SpeakWell().Abbreviations("yyds");
             var timeDifference = DateTime.Now.ToTimeStamp(false);
             await new DouYu().CheckLiveV2("5377721");
             Bot bot = new(new("www.zink.asia", 3001, 3000));
