@@ -11,9 +11,19 @@ public class DouYu : BasePlugin
     public override string Version { get; set; } = "0.0.1";
     public override string Desc { get; set; } = "直播查询";
     public override string Useage { get; set; } = "输入【斗鱼直播+房间号】，例如斗鱼直播111";
+    public override string LogPath
+    {
+        get
+        {
+            var path = Path.Combine(base.LogPath, "DouYu.log");
+            return path;
+        }
+        set { }
+    }
 
     public DouYu()
     {
+        if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
         SetTimer("DouYu", async () => await CheckLiveTimer(), x => x.WithName("DouYu").ToRunEvery(3).Minutes());
     }
 
@@ -24,6 +34,8 @@ public class DouYu : BasePlugin
         var roomList = idsStr.Split(',').ToList();
         foreach (var item in roomList)
         {
+            File.AppendAllLines(LogPath, ["-----------------------------"]);
+            File.AppendAllLines(LogPath, ["房间id：" + item]);
             var res = await CheckLiveV2(item);
             if (res != null)
             {
@@ -49,6 +61,11 @@ public class DouYu : BasePlugin
         if (!isLive) return null;
         var liveTimeSpan = room.Fetch<long>("show_time");
         var timeDifference = Math.Abs(DateTime.Now.ToTimeStamp() - liveTimeSpan);
+        File.AppendAllLines(LogPath, ["主播：" + room.Fetch("nickname")]);
+        File.AppendAllLines(LogPath, ["开播时间：" + liveTimeSpan]);
+        File.AppendAllLines(LogPath, ["当前时间：" + DateTime.Now.ToTimeStamp()]);
+        File.AppendAllLines(LogPath, ["时间差：" + timeDifference]);
+        File.AppendAllLines(LogPath, ["-----------------------------"]);
         if (timeDifference >= 180)
         {
             return null;
