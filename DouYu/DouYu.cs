@@ -66,7 +66,7 @@ public class DouYu : BasePlugin
         File.AppendAllLines(LogPath, ["当前时间：" + DateTime.Now.ToTimeStamp()]);
         File.AppendAllLines(LogPath, ["时间差：" + timeDifference]);
         File.AppendAllLines(LogPath, ["-----------------------------"]);
-        if (timeDifference >= 120)
+        if (timeDifference >= 90)
         {
             return null;
         }
