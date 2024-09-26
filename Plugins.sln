@@ -17,7 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oil", "Oli\Oil.csproj", "{4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SixtySeeWorld", "SixtySeeWorld\SixtySeeWorld.csproj", "{21529182-23B7-4757-A2FA-0E3C6113D556}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DouYu", "DouYu\DouYu.csproj", "{F1806FC7-ECDB-4133-837B-D0ABA3E25BAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DouYu", "DouYu\DouYu.csproj", "{F1806FC7-ECDB-4133-837B-D0ABA3E25BAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DouYin", "DouYin\DouYin.csproj", "{3197EED6-63C5-4587-A2C3-1CC8D5C7BECA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bilibili", "Bilibili\Bilibili.csproj", "{DEBF5590-D5D2-491D-ACBF-8AF65713B330}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{F1806FC7-ECDB-4133-837B-D0ABA3E25BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1806FC7-ECDB-4133-837B-D0ABA3E25BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1806FC7-ECDB-4133-837B-D0ABA3E25BAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3197EED6-63C5-4587-A2C3-1CC8D5C7BECA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3197EED6-63C5-4587-A2C3-1CC8D5C7BECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3197EED6-63C5-4587-A2C3-1CC8D5C7BECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3197EED6-63C5-4587-A2C3-1CC8D5C7BECA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBF5590-D5D2-491D-ACBF-8AF65713B330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBF5590-D5D2-491D-ACBF-8AF65713B330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBF5590-D5D2-491D-ACBF-8AF65713B330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBF5590-D5D2-491D-ACBF-8AF65713B330}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
