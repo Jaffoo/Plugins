@@ -62,8 +62,8 @@ public class DouYin : BasePlugin
         if (text.Length > 4 && text[..4] == "抖音关注")
         {
             var uid = text[4..];
-            var list = (await GetConfig("RoomId")).ToListStr();
-            if (!list.Contains(uid))
+            List<string> list = (await GetConfig("RoomId")).ToListStr();
+            if (list.Count == 0 || !list.Contains(uid))
             {
                 list.Add(uid);
                 await fmr.SendMessage("已关注");
@@ -79,7 +79,7 @@ public class DouYin : BasePlugin
         {
             var uid = text[4..];
             var list = (await GetConfig("Users")).ToListStr();
-            if (!list.Contains(uid))
+            if (list.Count == 0 || !list.Contains(uid))
             {
                 list.Add(uid);
                 await fmr.SendMessage("已添加用户");
