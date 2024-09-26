@@ -24,7 +24,7 @@ public class DouYu : BasePlugin
     public DouYu()
     {
         if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
-        SetTimer("DouYu", async () => await CheckLiveTimer(), x => x.WithName("DouYu").ToRunEvery(3).Minutes());
+        SetTimer("DouYu", async () => await CheckLiveTimer(), x => x.WithName("DouYu").ToRunEvery(1).Minutes());
     }
 
     public async Task CheckLiveTimer()
@@ -66,7 +66,7 @@ public class DouYu : BasePlugin
         File.AppendAllLines(LogPath, ["当前时间：" + DateTime.Now.ToTimeStamp()]);
         File.AppendAllLines(LogPath, ["时间差：" + timeDifference]);
         File.AppendAllLines(LogPath, ["-----------------------------"]);
-        if (timeDifference >= 180)
+        if (timeDifference >= 90)
         {
             return null;
         }
