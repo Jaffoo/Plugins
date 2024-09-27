@@ -39,7 +39,7 @@ public class DouYin : BasePlugin
         }
         else
         {
-            data += uid + '-' + liveStatus + ";";
+            data += uid + '-' + liveStatus.ToString().ToLower() + ";";
         }
         await SaveConfig("LiveStatus", data);
     }

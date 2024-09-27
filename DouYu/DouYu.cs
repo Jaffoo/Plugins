@@ -38,7 +38,7 @@ public class DouYu : BasePlugin
         }
         else
         {
-            data += uid + '-' + liveStatus + ";";
+            data += uid + '-' + liveStatus.ToString().ToLower() + ";";
         }
         await SaveConfig("LiveStatus", data);
     }
