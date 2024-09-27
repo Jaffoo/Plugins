@@ -49,17 +49,17 @@ public class DouYu : BasePlugin
         foreach (var item in roomList)
         {
             var (msg, isLive) = await CheckLive(item);
+            var currStatus = await UserLiveStatus(item);
+            if (currStatus == isLive) continue;
+            await SaveLiveStatus(item, isLive);
             if (isLive)
             {
-                var currStatus = await UserLiveStatus(item);
-                if (currStatus == isLive) continue;
                 var qqs = await GetConfig("Users");
                 var list = qqs.ToListStr().Select(x => x.ToLong());
                 foreach (var qq in list)
                 {
                     await SendPrivateMsg(qq, msg);
                 }
-                await SaveLiveStatus(item, isLive);
             }
         }
     }
