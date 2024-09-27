@@ -34,8 +34,8 @@ public class DouYin : BasePlugin
         var data = await GetConfig("LiveStatus");
         if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
         {
-            data = data.Replace(uid + "-true", uid + '-' + liveStatus);
-            data = data.Replace(uid + "-false", uid + '-' + liveStatus);
+            data = data.Replace(uid + "-true", uid + '-' + liveStatus.ToString().ToLower());
+            data = data.Replace(uid + "-false", uid + '-' + liveStatus.ToString().ToLower());
         }
         else
         {
