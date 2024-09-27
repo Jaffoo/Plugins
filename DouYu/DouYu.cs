@@ -1,4 +1,5 @@
 ﻿using PluginServer;
+using System.Data;
 using TBC.CommonLib;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
@@ -30,15 +31,33 @@ public class DouYu : BasePlugin
     private async Task SaveLiveStatus(string uid, bool liveStatus)
     {
         var data = await GetConfig("LiveStatus");
-        data = data.Replace(uid + "-true", uid + '-' + liveStatus);
-        data = data.Replace(uid + "-false", uid + '-' + liveStatus);
+        if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
+        {
+            data = data.Replace(uid + "-true", uid + '-' + liveStatus);
+            data = data.Replace(uid + "-false", uid + '-' + liveStatus);
+        }
+        else
+        {
+            data += uid + '-' + liveStatus + ";";
+        }
         await SaveConfig("LiveStatus", data);
+    }
+
+    private async Task RemoveLiveStatus(string uid)
+    {
+        var data = await GetConfig("LiveStatus");
+        if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
+        {
+            data = data.Replace(uid + "-true", "");
+            data = data.Replace(uid + "-false", "");
+            await SaveConfig("LiveStatus", data);
+        }
     }
 
     private async Task<bool> UserLiveStatus(string uid)
     {
         var data = await GetConfig("LiveStatus");
-        if (data.Contains(uid + "-true")) return true;
+        if (data.Contains(uid + "-true;")) return true;
         return false;
     }
     public async Task CheckLiveTimer()
@@ -103,7 +122,6 @@ public class DouYu : BasePlugin
             {
                 await fmr.SendMessage(roomIdStr);
             }
-
         }
         if (text.Length > 4 && text[..4] == "斗鱼通知")
         {
@@ -114,32 +132,31 @@ public class DouYu : BasePlugin
             {
                 list.Add(qq);
                 _ = await SaveConfig("Users", list.ListToStr());
-                await fmr.SendMessage("添加成功");
+                await fmr.SendMessage("已添加通知用户");
             }
             else
             {
                 list.Remove(qq);
                 _ = await SaveConfig("Users", list.ListToStr());
-                await fmr.SendMessage("删除成功");
+                await fmr.SendMessage("已删除通知用户");
             }
         }
         if (text.Length > 4 && text[..4] == "斗鱼关注")
         {
             var roomId = text[4..];
-            var roomIdStr = await GetConfig("RoomId");
-            var list = string.IsNullOrWhiteSpace(roomIdStr) ? [] : roomIdStr.Split(",").ToList();
-            if (!list.Contains(roomId)) list.Add(roomId);
-            var b = await SaveConfig("RoomId", string.Join(",", list));
-            await fmr.SendMessage(b ? "添加成功" : "添加失败");
-        }
-        if (text.Length > 4 && text[..4] == "斗鱼取关")
-        {
-            var roomId = text[4..];
-            var roomIdStr = await GetConfig("RoomId");
-            var list = string.IsNullOrWhiteSpace(roomIdStr) ? [] : roomIdStr.Split(",").ToList();
-            list.Remove(roomId);
-            var b = await SaveConfig("RoomId", string.Join(",", list));
-            await fmr.SendMessage(b ? "取关成功" : "取关失败");
+            List<string> list = (await GetConfig("RoomId")).ToListStr();
+            if (list.Count == 0 || !list.Contains(roomId))
+            {
+                list.Add(roomId);
+                await fmr.SendMessage("已关注");
+            }
+            else
+            {
+                list.Remove(roomId);
+                await RemoveLiveStatus(roomId);
+                await fmr.SendMessage("已取消关注");
+            }
+            await SaveConfig("RoomId", list.ListToStr());
         }
     }
 }

@@ -32,15 +32,33 @@ public class DouYin : BasePlugin
     private async Task SaveLiveStatus(string uid, bool liveStatus)
     {
         var data = await GetConfig("LiveStatus");
-        data = data.Replace(uid + "-true", uid + '-' + liveStatus);
-        data = data.Replace(uid + "-false", uid + '-' + liveStatus);
+        if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
+        {
+            data = data.Replace(uid + "-true", uid + '-' + liveStatus);
+            data = data.Replace(uid + "-false", uid + '-' + liveStatus);
+        }
+        else
+        {
+            data += uid + '-' + liveStatus + ";";
+        }
         await SaveConfig("LiveStatus", data);
+    }
+
+    private async Task RemoveLiveStatus(string uid)
+    {
+        var data = await GetConfig("LiveStatus");
+        if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
+        {
+            data = data.Replace(uid + "-true", "");
+            data = data.Replace(uid + "-false", "");
+            await SaveConfig("LiveStatus", data);
+        }
     }
 
     private async Task<bool> UserLiveStatus(string uid)
     {
         var data = await GetConfig("LiveStatus");
-        if (data.Contains(uid + "-true")) return true;
+        if (data.Contains(uid + "-true;")) return true;
         return false;
     }
 
@@ -71,6 +89,14 @@ public class DouYin : BasePlugin
     {
         var text = fmr.Message?.GetPlainText();
         if (string.IsNullOrWhiteSpace(text)) return;
+        if (text == "抖音关注")
+        {
+            var roomIdStr = await GetConfig("RoomId");
+            if (roomIdStr != null)
+            {
+                await fmr.SendMessage(roomIdStr);
+            }
+        }
         if (text.Length > 4 && text[..4] == "抖音直播")
         {
             var uid = text[4..];
@@ -88,6 +114,7 @@ public class DouYin : BasePlugin
             else
             {
                 list.Remove(uid);
+                await RemoveLiveStatus(uid);
                 await fmr.SendMessage("已取消关注");
             }
             await SaveConfig("RoomId", list.ListToStr());
@@ -99,12 +126,12 @@ public class DouYin : BasePlugin
             if (list.Count == 0 || !list.Contains(uid))
             {
                 list.Add(uid);
-                await fmr.SendMessage("已添加用户");
+                await fmr.SendMessage("已添加通知用户");
             }
             else
             {
                 list.Remove(uid);
-                await fmr.SendMessage("已删除用户");
+                await fmr.SendMessage("已删除通知用户");
             }
             await SaveConfig("Users", list.ListToStr());
         }
