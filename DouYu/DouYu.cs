@@ -27,6 +27,20 @@ public class DouYu : BasePlugin
         SetTimer("DouYu", async () => await CheckLiveTimer(), x => x.WithName("DouYu").ToRunEvery(1).Minutes());
     }
 
+    private async Task SaveLiveStatus(string uid, bool liveStatus)
+    {
+        var data = await GetConfig("LiveStatus");
+        data = data.Replace(uid + "-true", uid + '-' + liveStatus);
+        data = data.Replace(uid + "-false", uid + '-' + liveStatus);
+        await SaveConfig("LiveStatus", data);
+    }
+
+    private async Task<bool> UserLiveStatus(string uid)
+    {
+        var data = await GetConfig("LiveStatus");
+        if (data.Contains(uid + "-true")) return true;
+        return false;
+    }
     public async Task CheckLiveTimer()
     {
         var idsStr = GetConfig("RoomId").Result;
@@ -34,72 +48,42 @@ public class DouYu : BasePlugin
         var roomList = idsStr.Split(',').ToList();
         foreach (var item in roomList)
         {
-            File.AppendAllLines(LogPath, ["-----------------------------"]);
-            File.AppendAllLines(LogPath, ["房间id：" + item]);
-            var res = await CheckLiveV2(item);
-            if (res != null)
+            var (msg, isLive) = await CheckLive(item);
+            if (isLive)
             {
+                var currStatus = await UserLiveStatus(item);
+                if (currStatus == isLive) continue;
                 var qqs = await GetConfig("Users");
                 var list = qqs.ToListStr().Select(x => x.ToLong());
                 foreach (var qq in list)
                 {
-                    await SendPrivateMsg(qq, res);
+                    await SendPrivateMsg(qq, msg);
                 }
+                await SaveLiveStatus(item, isLive);
             }
         }
     }
 
-    public async Task<MessageChain?> CheckLiveV2(string roomid)
+    public async Task<(MessageChain msg, bool isLive)> CheckLive(string roomid)
     {
+        var msg = new MessageChainBuild();
         string url = "https://www.douyu.com/betard/" + roomid;
         HttpClient http = new();
         var res = await http.GetStringAsync(url);
         var room = res.Fetch("room");
         var isLive = room.Fetch<int>("show_status") == 1;
         var loop = room.Fetch<int>("videoLoop");
-        if (loop == 1) isLive = false;
-        if (!isLive) return null;
-        var liveTimeSpan = room.Fetch<long>("show_time");
-        var timeDifference = Math.Abs(DateTime.Now.ToTimeStamp() - liveTimeSpan);
-        File.AppendAllLines(LogPath, ["主播：" + room.Fetch("nickname")]);
-        File.AppendAllLines(LogPath, ["开播时间：" + liveTimeSpan]);
-        File.AppendAllLines(LogPath, ["当前时间：" + DateTime.Now.ToTimeStamp()]);
-        File.AppendAllLines(LogPath, ["时间差：" + timeDifference]);
-        File.AppendAllLines(LogPath, ["-----------------------------"]);
-        if (timeDifference >= 90)
+        if (loop == 1 || !isLive)
         {
-            return null;
+            msg.Text(room.Fetch("nickname") + "暂未开播");
+            return (msg.Build(), false);
         }
-        var msg = new MessageChainBuild();
+
         msg.Text("主播：" + room.Fetch("nickname") + "正在直播");
         msg.Text("\n标题：" + room.Fetch("room_name"));
         msg.Text("\n开播时间：" + Tools.TimeStampToDate(room.Fetch("show_time")).ToString("yyyy/MM/dd HH:mm:ss"));
         msg.Text("\n封面：").ImageByUrl(room.Fetch("room_pic"));
-        return msg.Build();
-    }
-
-    public async Task<MessageChain?> CheckLive(string roomid)
-    {
-        string url = "https://www.douyu.com/betard/" + roomid;
-        HttpClient http = new();
-        var res = await http.GetStringAsync(url);
-        var room = res.Fetch("room");
-        var isLive = room.Fetch<int>("show_status") == 1;
-        var loop = room.Fetch<int>("videoLoop");
-        if (loop == 1) isLive = false;
-        var msg = new MessageChainBuild();
-        if (!isLive)
-        {
-            msg.Text("主播" + room.Fetch("nickname") + "暂未开播");
-        }
-        else
-        {
-            msg.Text("主播：" + room.Fetch("nickname") + "正在直播");
-            msg.Text("\n标题：" + room.Fetch("room_name"));
-            msg.Text("\n开播时间：" + Tools.TimeStampToDate(room.Fetch("show_time")).ToString("yyyy/MM/dd HH:mm:ss"));
-            msg.Text("\n封面：").ImageByUrl(room.Fetch("room_pic"));
-        }
-        return msg.Build();
+        return (msg.Build(), true);
     }
 
     public override async Task FriendMessage(PrivateReceiver fmr)
@@ -109,8 +93,7 @@ public class DouYu : BasePlugin
         if (text.Length > 4 && text[..4] == "斗鱼直播")
         {
             var roomId = text[4..];
-            var msg = await CheckLive(roomId);
-            if (msg == null) return;
+            var (msg, _) = await CheckLive(roomId);
             await fmr.SendMessage(msg);
         }
         if (text == "斗鱼关注")

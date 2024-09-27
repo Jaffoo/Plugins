@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using PluginServer;
-using System.Net;
-using System.Net.Http.Headers;
 using System.Text;
 using TBC.CommonLib;
 using UnifyBot.Message.Chain;
@@ -28,6 +26,22 @@ public class DouYin : BasePlugin
     {
         if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
         Task.Run(GetCookie);
+        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
+    }
+
+    private async Task SaveLiveStatus(string uid, bool liveStatus)
+    {
+        var data = await GetConfig("LiveStatus");
+        data = data.Replace(uid + "-true", uid + '-' + liveStatus);
+        data = data.Replace(uid + "-false", uid + '-' + liveStatus);
+        await SaveConfig("LiveStatus", data);
+    }
+
+    private async Task<bool> UserLiveStatus(string uid)
+    {
+        var data = await GetConfig("LiveStatus");
+        if (data.Contains(uid + "-true")) return true;
+        return false;
     }
 
     public async Task CheckLiveTimer()
@@ -37,15 +51,18 @@ public class DouYin : BasePlugin
         var roomList = idsStr.Split(',').ToList();
         foreach (var item in roomList)
         {
-            var res = await CheckLive(item);
-            if (res != null)
+            var (msg, isLive) = await CheckLive(item);
+            if (isLive)
             {
+                var currStatus = await UserLiveStatus(item);
+                if (currStatus == isLive) continue;
                 var qqs = await GetConfig("Users");
                 var list = qqs.ToListStr().Select(x => x.ToLong());
                 foreach (var qq in list)
                 {
-                    await SendPrivateMsg(qq, res);
+                    await SendPrivateMsg(qq, msg);
                 }
+                await SaveLiveStatus(item, isLive);
             }
         }
     }
@@ -57,7 +74,7 @@ public class DouYin : BasePlugin
         if (text.Length > 4 && text[..4] == "抖音直播")
         {
             var uid = text[4..];
-            await fmr.SendMessage((await CheckLive(uid))!);
+            await fmr.SendMessage((await CheckLive(uid)).msg);
         }
         if (text.Length > 4 && text[..4] == "抖音关注")
         {
@@ -156,7 +173,7 @@ public class DouYin : BasePlugin
     /// </summary>
     /// <param name="uid"></param>
     /// <returns></returns>
-    public async Task<MessageChain?> CheckLive(string uid, bool timer = false)
+    public async Task<(MessageChain msg, bool isLive)> CheckLive(string uid)
     {
         try
         {
@@ -171,15 +188,13 @@ public class DouYin : BasePlugin
             if (roomRoot.IsNullOrWhiteSpace())
             {
                 msg.Text("该抖音用户未开通直播间");
-                if (timer) return null;
-                else return msg.Build();
+                return (msg.Build(), false);
             }
             var liveStatus = roomRoot.Fetch<int>("room_status");
             if (liveStatus != 0)
             {
                 msg.Text(res.Fetch("data:user:nickname") + "暂未开播");
-                if (timer) return null;
-                else return msg.Build();
+                return (msg.Build(), false);
             }
             var roomInfo = roomRoot.Fetch<JArray>("data")[0].ToString();
             msg.Text("主播：" + roomRoot.Fetch("user:nickname") + "正在直播");
@@ -193,12 +208,12 @@ public class DouYin : BasePlugin
             catch
             {
             }
-            return msg.Build();
+            return (msg.Build(), true);
         }
         catch (Exception e)
         {
             await File.AppendAllLinesAsync(LogPath, [e.Message]);
-            return new MessageChainBuild().Text("直播查询失败，可能是缓存过期，已刷新，可再次尝试！").Build();
+            return (new MessageChainBuild().Text("直播查询失败，可能是缓存过期，已刷新，可再次尝试！").Build(), false);
         }
     }
 
