@@ -229,11 +229,13 @@ public class DouYin : BasePlugin
             msg.Text("\n连接：" + $"https://live.douyin.com/{uid}");
             try
             {
+                Console.WriteLine("抖音封面", roomInfo.Fetch("cover:url_list"));
                 var cover = roomInfo.Fetch<List<string>>("cover:url_list")[0];
                 msg.ImageByUrl("\n封面：" + cover);
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
             }
             return (msg.Build(), true);
         }
