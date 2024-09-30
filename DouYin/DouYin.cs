@@ -167,7 +167,7 @@ public class DouYin : BasePlugin
             { "Accept", "*/*" },
             { "User-Agent", "PostmanRuntime-ApipostRuntime/1.1.0" },
             { "Connection", "keep-alive" },
-            {"Cookie",await GetCookie() },
+            {"Cookie",await Generatettwid() },
         };
     }
     private static string LiveQuery(string uid)
@@ -229,7 +229,6 @@ public class DouYin : BasePlugin
             msg.Text("\n连接：" + $"https://live.douyin.com/{uid}");
             try
             {
-                Console.WriteLine("抖音封面", roomInfo.Fetch("cover:url_list"));
                 var cover = roomInfo.Fetch<List<string>>("cover:url_list")[0];
                 msg.ImageByUrl("\n封面：" + cover);
             }

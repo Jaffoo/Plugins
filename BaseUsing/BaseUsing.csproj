@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="PluginServer" Version="2.1.1.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.4" />
-    <PackageReference Include="TBC.CommonLib" Version="1.1.4.2" />
+    <PackageReference Include="TBC.CommonLib" Version="1.1.4.4" />
   </ItemGroup>
 
 </Project>

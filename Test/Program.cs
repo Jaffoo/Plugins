@@ -10,6 +10,8 @@ namespace Test
     {
         static async Task Main()
         {
+          await  new DouYin().CheckLive("Tc5258");
+
             var bot = new UnifyBot.Bot(new UnifyBot.Model.Connect("www.zink.asia", 3001, 3000, "523366"));
             await bot.StartAsync();
             bot.MessageReceived.OfType<PrivateReceiver>().Subscribe(async x =>
