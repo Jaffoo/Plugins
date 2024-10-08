@@ -24,9 +24,9 @@ public class DouYin : BasePlugin
     }
     public DouYin()
     {
-        if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
-        Task.Run(GetCookie);
-        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
+        //if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
+        //Task.Run(GetCookie);
+        //SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
     }
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
@@ -230,7 +230,8 @@ public class DouYin : BasePlugin
             try
             {
                 var cover = roomInfo.Fetch<List<string>>("cover:url_list")[0];
-                msg.ImageByUrl("\n封面：" + cover);
+                msg.Text("\n封面：");
+                msg.ImageByUrl(cover);
             }
             catch (Exception e)
             {
