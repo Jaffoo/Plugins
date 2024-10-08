@@ -21,7 +21,7 @@ namespace Test
             res = msg.SendPrivate(bot, 1737678289);
             bot.MessageReceived.OfType<PrivateReceiver>().Subscribe(x =>
             {
-                Console.WriteLine(x.Message.ToJsonStr());
+                Console.WriteLine(x.Message);
             });
             while (true)
             {
