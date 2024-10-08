@@ -17,6 +17,12 @@ namespace Test
 
             var msg = (await new DouYin().CheckLive("Tc5258")).msg;
             var res = msg.SendPrivate(bot, 1737678289);
+            msg = (await new DouYu().CheckLive("9999")).msg;
+            res = msg.SendPrivate(bot, 1737678289);
+            bot.MessageReceived.OfType<PrivateReceiver>().Subscribe(x =>
+            {
+                Console.WriteLine(x.Message.ToJsonStr());
+            });
             while (true)
             {
                 Thread.Sleep(10);

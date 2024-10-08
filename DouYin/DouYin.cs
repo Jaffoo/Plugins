@@ -225,12 +225,12 @@ public class DouYin : BasePlugin
             }
             var roomInfo = roomRoot.Fetch<JArray>("data")[0].ToString();
             msg.Text("主播：" + roomRoot.Fetch("user:nickname") + "正在直播");
-            msg.Text("\n标题：" + roomInfo.Fetch("title"));
-            msg.Text("\n连接：" + $"https://live.douyin.com/{uid}");
+            msg.Text("标题：" + roomInfo.Fetch("title"));
+            msg.Text("连接：" + $"https://live.douyin.com/{uid}");
             try
             {
                 var cover = roomInfo.Fetch<List<string>>("cover:url_list")[0];
-                msg.Text("\n封面：");
+                msg.Text("封面：");
                 msg.ImageByUrl(cover);
             }
             catch (Exception e)
