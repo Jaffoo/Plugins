@@ -12,19 +12,9 @@ public class DouYu : IPluginBase
     public override string Version { get; set; } = "0.0.1";
     public override string Desc { get; set; } = "直播查询";
     public override string Useage { get; set; } = "输入【斗鱼直播+房间号】，例如斗鱼直播111";
-    public override string LogPath
-    {
-        get
-        {
-            var path = Path.Combine(base.LogPath, "DouYu.log");
-            return path;
-        }
-        set { }
-    }
 
     public DouYu()
     {
-        if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
         SetTimer("DouYu", async () => await CheckLiveTimer(), x => x.WithName("DouYu").ToRunEvery(1).Minutes());
     }
 

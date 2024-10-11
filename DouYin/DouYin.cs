@@ -13,20 +13,11 @@ public class DouYin : IPluginBase
     public override string Desc { get; set; } = "监听新动态和直播";
     public override string Version { get; set; } = "0.0.1";
     public override string Useage { get; set; } = "输入抖音直播/抖音关注/抖音通知+抖音号";
-    public override string LogPath
-    {
-        get
-        {
-            var path = Path.Combine(base.LogPath, "DouYu.log");
-            return path;
-        }
-        set { }
-    }
+
     public DouYin()
     {
-        //if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
-        //Task.Run(GetCookie);
-        //SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
+        Task.Run(GetCookie);
+        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
     }
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
