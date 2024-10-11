@@ -1,12 +1,11 @@
-﻿using FluentScheduler;
-using SqlSugar;
+﻿using SqlSugar;
 using TBC.CommonLib;
-using PluginServer;
+using PluginBase;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace Plugins;
-public class SixtySeeWorld : BasePlugin
+public class SixtySeeWorld : IPluginBase
 {
     public override string Name { get; set; } = "SixtySeeWorld";
     public override string Desc { get; set; } = "60s看世界";

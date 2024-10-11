@@ -19,9 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SixtySeeWorld", "SixtySeeWo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DouYu", "DouYu\DouYu.csproj", "{F1806FC7-ECDB-4133-837B-D0ABA3E25BAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DouYin", "DouYin\DouYin.csproj", "{3197EED6-63C5-4587-A2C3-1CC8D5C7BECA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DouYin", "DouYin\DouYin.csproj", "{3197EED6-63C5-4587-A2C3-1CC8D5C7BECA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bilibili", "Bilibili\Bilibili.csproj", "{DEBF5590-D5D2-491D-ACBF-8AF65713B330}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bilibili", "Bilibili\Bilibili.csproj", "{DEBF5590-D5D2-491D-ACBF-8AF65713B330}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloadDLL", "ZDownloadDLL\DownloadDLL.csproj", "{65E04433-D77D-4EF5-8EBA-E4237F746B4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{DEBF5590-D5D2-491D-ACBF-8AF65713B330}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEBF5590-D5D2-491D-ACBF-8AF65713B330}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEBF5590-D5D2-491D-ACBF-8AF65713B330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65E04433-D77D-4EF5-8EBA-E4237F746B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65E04433-D77D-4EF5-8EBA-E4237F746B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65E04433-D77D-4EF5-8EBA-E4237F746B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65E04433-D77D-4EF5-8EBA-E4237F746B4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

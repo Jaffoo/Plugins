@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using PluginServer;
+using PluginBase;
 using System.Text;
 using TBC.CommonLib;
 using UnifyBot.Message.Chain;
@@ -7,7 +7,7 @@ using UnifyBot.Receiver.MessageReceiver;
 
 namespace Plugins;
 
-public class DouYin : BasePlugin
+public class DouYin : IPluginBase
 {
     public override string Name { get; set; } = "DouYin";
     public override string Desc { get; set; } = "监听新动态和直播";

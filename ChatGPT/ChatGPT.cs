@@ -5,11 +5,11 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Xml;
 using TBC.CommonLib;
-using PluginServer;
 using UnifyBot.Receiver.MessageReceiver;
+using PluginBase;
 
 namespace Plugins;
-public class ChatGPT : BasePlugin
+public class ChatGPT : IPluginBase
 {
 
     public static Dictionary<string, List<object>> LastMsg = new();

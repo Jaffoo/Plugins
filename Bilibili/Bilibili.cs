@@ -1,8 +1,9 @@
-﻿using PluginServer;
+﻿using PluginBase;
+
 
 namespace Plugins;
 
-public class Bilibili : BasePlugin
+public class Bilibili : IPluginBase
 {
     public override string Name { get; set; } = "小破站";
     public override string Desc { get; set; } = "监听小破站新动态和直播";

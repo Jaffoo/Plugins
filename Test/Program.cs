@@ -1,8 +1,5 @@
 ﻿using Plugins;
 using System.Reactive.Linq;
-using TBC.CommonLib;
-using UnifyBot;
-using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace Test

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UmoBot.DownloadDLL": {
+      "commandName": "Project",
+      "workingDirectory": "./"
+    }
+  }
+}

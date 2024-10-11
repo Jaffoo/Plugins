@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
-using System;
+using PluginBase;
 using TBC.CommonLib;
-using PluginServer;
+
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace Plugins;
-public class CookBook : BasePlugin
+public class CookBook : IPluginBase
 {
     private static List<Cooks> Menu = new();
     private static string CookName = string.Empty;

@@ -1,12 +1,12 @@
-﻿using PluginServer;
-using System.Data;
+﻿using System.Data;
 using TBC.CommonLib;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
+using PluginBase;
 
 namespace Plugins;
 
-public class DouYu : BasePlugin
+public class DouYu : IPluginBase
 {
     public override string Name { get; set; } = "DouYuLive";
     public override string Version { get; set; } = "0.0.1";
