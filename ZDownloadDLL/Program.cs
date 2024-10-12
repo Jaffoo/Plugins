@@ -66,14 +66,12 @@ internal class Program
         using var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync();
-        var jsonObject = JsonConvert.DeserializeObject<JObject>(body);
+        var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(body);
         if (jsonObject == null) return "";
         // 获取最新的键名
-        var latestKey = jsonObject.Properties()
-            .Select(p => p.Name)
-            .OrderByDescending(name => name) // 按字典序降序排序
-            .FirstOrDefault();
-        return latestKey ?? "";
+        var latestKey = jsonObject.OrderByDescending(x => x.Key.Replace(".nupkg", "").Replace(".", ""))
+            .ToList().FirstOrDefault().Key;
+        return latestKey;
     }
     private static async Task<Stream> GetPkgStream(string pkgName)
     {
