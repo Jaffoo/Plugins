@@ -1,11 +1,11 @@
 ﻿using SqlSugar;
 using TBC.CommonLib;
-using PluginBase;
+using IPluginBase;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace Plugins;
-public class SixtySeeWorld : IPluginBase
+public class SixtySeeWorld : PluginBase
 {
     public override string Name { get; set; } = "SixtySeeWorld";
     public override string Desc { get; set; } = "60s看世界";

@@ -6,10 +6,10 @@ using System.Text;
 using System.Xml;
 using TBC.CommonLib;
 using UnifyBot.Receiver.MessageReceiver;
-using PluginBase;
+using IPluginBase;
 
-namespace Plugins;
-public class ChatGPT : IPluginBase
+namespace ChatGPT;
+public class ChatGPT : PluginBase
 {
 
     public static Dictionary<string, List<object>> LastMsg = new();
@@ -114,6 +114,10 @@ public class ChatGPT : IPluginBase
     {
         var text = gmr.Message?.GetPlainText();
         if (string.IsNullOrWhiteSpace(text)) return;
+        if (text == "获取密钥")
+        {
+            await gmr.SendMessage("网址(https://github.com/chatanywhere/GPT_API_free)点击申请内测免费key");
+        }
         if (text[0] == '？')
         {
             var question = text.Replace("？", "");
@@ -123,18 +127,18 @@ public class ChatGPT : IPluginBase
                 await gmr.SendMessage(answer);
             }
         }
-        if (text.Contains("设置模型#"))
+        if (text.Length > 4 && text[..4] == "设置模型")
         {
-            var mode = text.Replace("设置模型#", "");
+            var mode = text[4..];
             if (mode.IsNullOrWhiteSpace())
                 await gmr.SendMessage("请输入模型");
             else
                 await gmr.SendMessage(Save("Mode", mode));
 
         }
-        if (text.Contains("设置密钥#"))
+        if (text.Length > 4 && text[..4] == "设置密钥")
         {
-            var key = text.Replace("设置密钥#", "");
+            var key = text[4..];
             if (key.IsNullOrWhiteSpace())
                 await gmr.SendMessage("请输入密钥");
             else
@@ -146,7 +150,7 @@ public class ChatGPT : IPluginBase
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(SecretKey)) return "请配置密钥";
+            if (string.IsNullOrWhiteSpace(SecretKey)) return "请配置密钥或输入设置密钥+你的密钥";
             if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
             var url = "https://api.chatanywhere.com.cn/v1/chat/completions";
             var objs = new List<object>();

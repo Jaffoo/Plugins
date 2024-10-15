@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IPluginBase" Version="0.0.5" />
-    <PackageReference Include="TBC.CommonLib" Version="1.1.4.4" />
+    <PackageReference Include="IPluginBase" Version="0.0.9" />
+    <PackageReference Include="TBC.CommonLib" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>

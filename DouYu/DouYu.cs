@@ -2,11 +2,11 @@
 using TBC.CommonLib;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
-using PluginBase;
+using IPluginBase;
 
 namespace Plugins;
 
-public class DouYu : IPluginBase
+public class DouYu : PluginBase
 {
     public override string Name { get; set; } = "DouYuLive";
     public override string Version { get; set; } = "0.0.1";

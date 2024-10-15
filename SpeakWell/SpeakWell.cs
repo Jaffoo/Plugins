@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using TBC.CommonLib;
-using PluginBase;
+using IPluginBase;
 using UnifyBot.Receiver.MessageReceiver;
 
 namespace Plugins;
-public class SpeakWell : IPluginBase
+public class SpeakWell : PluginBase
 {
     public override string Name { get; set; } = "SpeakWell";
     public override string Version { get; set; } = "0.0.1";

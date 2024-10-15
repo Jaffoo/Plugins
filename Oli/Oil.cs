@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using TBC.CommonLib;
-using PluginBase;
+using IPluginBase;
 using UnifyBot.Receiver.MessageReceiver;
 
-namespace Plugins;
-public class Oil : IPluginBase
+namespace Oil;
+public class Oil : PluginBase
 {
     public override string Name { get; set; } = "Oil";
     public override string Desc { get; set; } = "今日油价";
