@@ -3,7 +3,7 @@ using TBC.CommonLib;
 using IPluginBase;
 using UnifyBot.Receiver.MessageReceiver;
 
-namespace Plugins;
+namespace SpeakWell;
 public class SpeakWell : PluginBase
 {
     public override string Name { get; set; } = "SpeakWell";

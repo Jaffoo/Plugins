@@ -4,7 +4,7 @@ using IPluginBase;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 
-namespace Plugins;
+namespace SixtySeeWorld;
 public class SixtySeeWorld : PluginBase
 {
     public override string Name { get; set; } = "SixtySeeWorld";
