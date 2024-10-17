@@ -57,7 +57,8 @@ public class ChatGPT : PluginBase
         get
         {
             var path = base.LogPath + "ChatGPT.log";
-            if (!Directory.Exists(base.ConfPath)) Directory.CreateDirectory(base.ConfPath);
+            if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
+            if (!File.Exists(path)) File.Create(path).Close();
             return path;
         }
         set { }

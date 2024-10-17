@@ -78,7 +78,7 @@ public class DouYin : PluginBase
 
     public override async Task FriendMessage(PrivateReceiver fmr)
     {
-        var text = fmr.Message?.GetPlainText();
+        var text = fmr.Message.GetPlainText();
         if (string.IsNullOrWhiteSpace(text)) return;
         if (text == "抖音关注")
         {
@@ -230,9 +230,8 @@ public class DouYin : PluginBase
             }
             return (msg.Build(), true);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            await File.AppendAllLinesAsync(LogPath, [e.Message]);
             return (new MessageChainBuild().Text("直播查询失败，可能是缓存过期，已刷新，可再次尝试！").Build(), false);
         }
     }
