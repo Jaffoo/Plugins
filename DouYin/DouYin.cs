@@ -83,10 +83,12 @@ public class DouYin : PluginBase
         if (text == "抖音关注")
         {
             var roomIdStr = await GetConfig("RoomId");
-            if (roomIdStr != null)
-            {
+            if (roomIdStr.IsNullOrWhiteSpace())
+                await fmr.SendMessage("未关注任何博主");
+            else
                 await fmr.SendMessage(roomIdStr);
-            }
+
+
         }
         if (text.Length > 4 && text[..4] == "抖音直播")
         {
@@ -96,7 +98,8 @@ public class DouYin : PluginBase
         if (text.Length > 4 && text[..4] == "抖音关注")
         {
             var uid = text[4..];
-            List<string> list = (await GetConfig("RoomId")).ToListStr();
+            var rooms = await GetConfig("RoomId");
+            List<string> list = rooms.IsNullOrWhiteSpace() ? [] : rooms.ToListStr();
             if (list.Count == 0 || !list.Contains(uid))
             {
                 list.Add(uid);
@@ -113,7 +116,8 @@ public class DouYin : PluginBase
         if (text.Length > 4 && text[..4] == "抖音通知")
         {
             var uid = text[4..];
-            var list = (await GetConfig("Users")).ToListStr();
+            var users = await GetConfig("Users");
+            List<string> list = users.IsNullOrWhiteSpace() ? [] : users.ToListStr();
             if (list.Count == 0 || !list.Contains(uid))
             {
                 list.Add(uid);

@@ -108,10 +108,11 @@ public class DouYu : PluginBase
         if (text == "斗鱼关注")
         {
             var roomIdStr = await GetConfig("RoomId");
-            if (roomIdStr != null)
-            {
+            if (roomIdStr.IsNullOrWhiteSpace())
+                await fmr.SendMessage("未关注任何主播");
+            else
                 await fmr.SendMessage(roomIdStr);
-            }
+
         }
         if (text.Length > 4 && text[..4] == "斗鱼通知")
         {
@@ -134,7 +135,8 @@ public class DouYu : PluginBase
         if (text.Length > 4 && text[..4] == "斗鱼关注")
         {
             var roomId = text[4..];
-            List<string> list = (await GetConfig("RoomId")).ToListStr();
+            var rooms = await GetConfig("RoomId");
+            List<string> list = rooms.IsNullOrWhiteSpace() ? [] : rooms.ToListStr();
             if (list.Count == 0 || !list.Contains(roomId))
             {
                 list.Add(roomId);
