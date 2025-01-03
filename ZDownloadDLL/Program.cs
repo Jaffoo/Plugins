@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace DownloadDLL;
 
@@ -69,9 +70,25 @@ internal class Program
         var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(body);
         if (jsonObject == null) return "";
         // 获取最新的键名
-        var latestKey = jsonObject.OrderByDescending(x => x.Key.Replace(".nupkg", "").Replace(".", ""))
-            .ToList().FirstOrDefault().Key;
-        return latestKey;
+        var list = jsonObject.Keys.Select(x =>
+        {
+            var matches = Regex.Matches(x, @"\d+");
+            if (matches.Count > 0)
+            {
+                var combinedNumbers = string.Join("", matches.Select(m => m.Value));
+                // 去掉末尾的零
+                while (combinedNumbers.EndsWith("0"))
+                {
+                    combinedNumbers = combinedNumbers.Substring(0, combinedNumbers.Length - 1);
+                }
+                var keyVal = new KeyValuePair<string, string>(combinedNumbers, x);
+
+                return keyVal;
+            }
+            return new KeyValuePair<string, string>();
+        }).ToList();
+        var last = list.OrderByDescending(x => x.Key.Max()).ThenByDescending(x => x.Key.Length);
+        return last.FirstOrDefault().Value;
     }
     private static async Task<Stream> GetPkgStream(string pkgName)
     {

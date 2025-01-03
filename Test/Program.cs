@@ -9,7 +9,7 @@ namespace Test
         static async Task Main()
         {
 
-            var bot = new UnifyBot.Bot(new UnifyBot.Model.Connect("localhost", 3001, 3000));
+            var bot = new UnifyBot.Bot(new UnifyBot.Model.Connect("www.zink.asia", 3001, 3000));
             await bot.StartAsync();
 
             var msg = (await new DouYin.DouYin().CheckLive("Tc5258")).msg;
