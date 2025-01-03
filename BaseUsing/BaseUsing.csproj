@@ -7,12 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IPluginBase" Version="1.0.0-rc" />
-    <PackageReference Include="TBC.CommonLib" Version="1.2.0" />
+    <Folder Include="nuget\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="nuget\" />
+    <PackageReference Include="IPluginBase" Version="1.0.6" />
   </ItemGroup>
 
 </Project>
