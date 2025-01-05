@@ -17,7 +17,7 @@ public class DouYin : PluginBase
     public DouYin()
     {
         Task.Run(GetCookie);
-        //SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
+        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
     }
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
