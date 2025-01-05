@@ -1,5 +1,4 @@
 ﻿using SqlSugar;
-using TBC.CommonLib;
 using IPluginBase;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
@@ -43,7 +42,7 @@ public class SixtySeeWorld : PluginBase
             var b64 = "base64://" + Convert.ToBase64String(imageBytes);
             var qqStr = File.ReadAllText(ConfPath);
             if (qqStr.IsNullOrWhiteSpace()) return;
-            var qq = qqStr.ToListInt().Select(x => x.ToLong()).ToList();
+            var qq = qqStr.Split(",").Select(x => long.Parse(x)).ToList();
             if (senderQQ > 0 && qq.Contains(senderQQ))
                 await SendPrivateMsg(senderQQ, new MessageChainBuild().ImageByBase64(b64).Build());
             else
@@ -66,11 +65,11 @@ public class SixtySeeWorld : PluginBase
         {
             var qq = text[3..];
             var str = await File.ReadAllTextAsync(ConfPath);
-            var list = str.IsNullOrWhiteSpace() ? [] : str.ToListStr();
+            var list = str.IsNullOrWhiteSpace() ? [] : ToListStr(str);
             if (!list.Contains(qq))
             {
                 list.Add(qq);
-                File.WriteAllText(ConfPath, list.ListToStr());
+                File.WriteAllText(ConfPath, ListToStr(list));
             }
             await gmr.SendMessage("已添加");
         }
@@ -78,11 +77,22 @@ public class SixtySeeWorld : PluginBase
         {
             var qq = text[5..];
             var str = await File.ReadAllTextAsync(ConfPath);
-            var list = str.IsNullOrWhiteSpace() ? [] : str.ToListStr();
+            var list = str.IsNullOrWhiteSpace() ? [] : ToListStr(str);
             list.Remove(qq);
-            await File.WriteAllTextAsync(ConfPath, list.ListToStr());
+            await File.WriteAllTextAsync(ConfPath, ListToStr(list));
             await gmr.SendMessage("已删除");
         }
+    }
+    public List<string> ToListStr(string str, char splitCahr = ',')
+    {
+        if (str.IsNullOrWhiteSpace()) throw new ArgumentNullException(nameof(str));
+        if (str.IsNullOrWhiteSpace()) return new List<string>();
+        var list = str.Split(splitCahr).ToList();
+        return list ?? throw new Exception("转换结果为空");
+    }
+    public string ListToStr<T>(List<T> list, string cr = ",")
+    {
+        return string.Join(cr, list);
     }
 }
 

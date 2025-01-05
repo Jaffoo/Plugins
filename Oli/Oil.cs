@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using TBC.CommonLib;
 using IPluginBase;
 using UnifyBot.Receiver.MessageReceiver;
+using UnifyBot.Utils;
 
 namespace Oil;
 public class Oil : PluginBase
@@ -16,7 +16,7 @@ public class Oil : PluginBase
         {
             if (string.IsNullOrWhiteSpace(province)) return "省份不能为空！";
             string url = "https://api.pearktrue.cn/api/oil";
-            var response = await Tools.GetAsync(url);
+            var response = await UnifyBot.Utils.Tools.GetAsync(url);
             var data = response.ToJObject();
             if (data["code"]!.ToString() == "200")
             {

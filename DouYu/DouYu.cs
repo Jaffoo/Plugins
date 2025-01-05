@@ -1,8 +1,10 @@
 ﻿using System.Data;
-using TBC.CommonLib;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 using IPluginBase;
+using System.Text.RegularExpressions;
+using UnifyBot.Utils;
+using System.Reactive;
 
 namespace Plugins;
 
@@ -64,7 +66,7 @@ public class DouYu : PluginBase
             if (isLive)
             {
                 var qqs = await GetConfig("Users");
-                var list = qqs.ToListStr().Select(x => x.ToLong());
+                var list = qqs.Split(",").Select(x => long.Parse(x));
                 foreach (var qq in list)
                 {
                     await SendPrivateMsg(qq, msg);
@@ -90,7 +92,7 @@ public class DouYu : PluginBase
 
         msg.Text("主播：" + room.Fetch("nickname") + "正在直播");
         msg.Text("标题：" + room.Fetch("room_name"));
-        msg.Text("开播时间：" + Tools.TimeStampToDate(room.Fetch("show_time")).ToString("yyyy/MM/dd HH:mm:ss"));
+        msg.Text("开播时间：" + TimeStampToDate(room.Fetch("show_time")).ToString("yyyy/MM/dd HH:mm:ss"));
         msg.Text("封面：").ImageByUrl(room.Fetch("room_pic"));
         return (msg.Build(), true);
     }
@@ -118,17 +120,17 @@ public class DouYu : PluginBase
         {
             var qq = text[4..];
             var qqs = await GetConfig("Users");
-            var list = qqs.IsNullOrWhiteSpace() ? [] : qqs.ToListStr();
+            var list = qqs.IsNullOrWhiteSpace() ? [] : ToListStr(qqs);
             if (!list.Contains(qq))
             {
                 list.Add(qq);
-                _ = await SaveConfig("Users", list.ListToStr());
+                _ = await SaveConfig("Users", ListToStr(list));
                 await fmr.SendMessage("已添加通知用户");
             }
             else
             {
                 list.Remove(qq);
-                _ = await SaveConfig("Users", list.ListToStr());
+                _ = await SaveConfig("Users", ListToStr(list));
                 await fmr.SendMessage("已删除通知用户");
             }
         }
@@ -136,7 +138,7 @@ public class DouYu : PluginBase
         {
             var roomId = text[4..];
             var rooms = await GetConfig("RoomId");
-            List<string> list = rooms.IsNullOrWhiteSpace() ? [] : rooms.ToListStr();
+            List<string> list = rooms.IsNullOrWhiteSpace() ? [] : ToListStr(rooms);
             if (list.Count == 0 || !list.Contains(roomId))
             {
                 list.Add(roomId);
@@ -148,7 +150,43 @@ public class DouYu : PluginBase
                 await RemoveLiveStatus(roomId);
                 await fmr.SendMessage("已取消关注");
             }
-            await SaveConfig("RoomId", list.ListToStr());
+            await SaveConfig("RoomId", ListToStr(list));
         }
+    }
+    public bool IsNumber(string input)
+    {
+        // 正则表达式：匹配整数
+        string pattern = @"^\d+$";
+        return Regex.IsMatch(input, pattern);
+    }
+
+    public string ListToStr<T>(List<T> list, string cr = ",")
+    {
+        return string.Join(cr, list);
+    }
+
+    public DateTime TimeStampToDate(string timeStamp)
+    {
+        DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        DateTime convertedTime;
+
+        if (timeStamp.ToString().Length == 10)
+            // 10 位时间戳
+            convertedTime = origin.AddSeconds(long.Parse(timeStamp));
+        else if (timeStamp.ToString().Length == 13)
+            // 13 位时间戳
+            convertedTime = origin.AddMilliseconds(long.Parse(timeStamp));
+        else
+            throw new ArgumentException("时间戳格式错误");
+
+        return convertedTime.ToLocalTime(); // 转换为本地时间
+    }
+
+    public List<string> ToListStr(string str, char splitCahr = ',')
+    {
+        if (str.IsNullOrWhiteSpace()) throw new ArgumentNullException(nameof(str));
+        if (str.IsNullOrWhiteSpace()) return new List<string>();
+        var list = str.Split(splitCahr).ToList();
+        return list ?? throw new Exception("转换结果为空");
     }
 }

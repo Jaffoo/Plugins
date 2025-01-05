@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using IPluginBase;
-using TBC.CommonLib;
-
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
+using UnifyBot.Utils;
+using System.Text.RegularExpressions;
 
 namespace CookBook;
 public class CookBook : PluginBase
@@ -20,7 +20,7 @@ public class CookBook : PluginBase
         {
             if (string.IsNullOrWhiteSpace(name)) return;
             string url = "https://api.pearktrue.cn/api/cookbook/?search=" + name;
-            var response = await Tools.GetAsync(url);
+            var response = await UnifyBot.Utils.Tools.GetAsync(url);
             var data = response.ToJObject();
             if (data["code"]!.ToString() == "200")
             {
@@ -47,12 +47,12 @@ public class CookBook : PluginBase
             if (!CookName.IsNullOrWhiteSpace() && text.Contains(CookName) && Menu.Count > 0)
             {
                 var indexStr = text.Replace(CookName, "");
-                if (indexStr.IsNumber())
+                if (IsNumber(indexStr))
                 {
                     var index1 = indexStr.ToInt() - 1;
                     var mcb = new MessageChainBuild()
-                        .Text("材料：" + Menu[index1].Materials.ListToStr(','))
-                        .Text("\n步骤：\n" + Menu[index1].Practice.ListToStr('\n'));
+                        .Text("材料：" + ListToStr(Menu[index1].Materials))
+                        .Text("\n步骤：\n" + ListToStr(Menu[index1].Practice, "\n"));
                     await pr.SendMessage(mcb.Build());
                 }
             }
@@ -75,6 +75,17 @@ public class CookBook : PluginBase
         {
             return;
         }
+    }
+    public bool IsNumber(string input)
+    {
+        // 正则表达式：匹配整数
+        string pattern = @"^\d+$";
+        return Regex.IsMatch(input, pattern);
+    }
+
+    public string ListToStr<T>(List<T> list, string cr = ",")
+    {
+        return string.Join(cr, list);
     }
 }
 

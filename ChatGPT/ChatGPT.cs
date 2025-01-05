@@ -4,7 +4,6 @@ using System.Net.Http.Headers;
 using System.Reactive.Linq;
 using System.Text;
 using System.Xml;
-using TBC.CommonLib;
 using UnifyBot.Receiver.MessageReceiver;
 using IPluginBase;
 

@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
 using IPluginBase;
 using System.Text;
-using TBC.CommonLib;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
+using UnifyBot.Utils;
 
 namespace DouYin;
 
@@ -17,7 +17,7 @@ public class DouYin : PluginBase
     public DouYin()
     {
         Task.Run(GetCookie);
-        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
+        //SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
     }
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
@@ -67,7 +67,7 @@ public class DouYin : PluginBase
             if (isLive)
             {
                 var qqs = await GetConfig("Users");
-                var list = qqs.ToListStr().Select(x => x.ToLong());
+                var list = ToListStr(qqs).Select(x => long.Parse(x));
                 foreach (var qq in list)
                 {
                     await SendPrivateMsg(qq, msg);
@@ -99,7 +99,7 @@ public class DouYin : PluginBase
         {
             var uid = text[4..];
             var rooms = await GetConfig("RoomId");
-            List<string> list = rooms.IsNullOrWhiteSpace() ? [] : rooms.ToListStr();
+            List<string> list = rooms.IsNullOrWhiteSpace() ? [] : ToListStr(rooms);
             if (list.Count == 0 || !list.Contains(uid))
             {
                 list.Add(uid);
@@ -111,13 +111,13 @@ public class DouYin : PluginBase
                 await RemoveLiveStatus(uid);
                 await fmr.SendMessage("已取消关注");
             }
-            await SaveConfig("RoomId", list.ListToStr());
+            await SaveConfig("RoomId", ListToStr(list));
         }
         if (text.Length > 4 && text[..4] == "抖音通知")
         {
             var uid = text[4..];
             var users = await GetConfig("Users");
-            List<string> list = users.IsNullOrWhiteSpace() ? [] : users.ToListStr();
+            List<string> list = users.IsNullOrWhiteSpace() ? [] : ToListStr(users);
             if (list.Count == 0 || !list.Contains(uid))
             {
                 list.Add(uid);
@@ -128,7 +128,7 @@ public class DouYin : PluginBase
                 list.Remove(uid);
                 await fmr.SendMessage("已删除通知用户");
             }
-            await SaveConfig("Users", list.ListToStr());
+            await SaveConfig("Users", ListToStr(list));
         }
     }
 
@@ -267,5 +267,16 @@ public class DouYin : PluginBase
         {
             return "";
         }
+    }
+    public string ListToStr<T>(List<T> list, string cr = ",")
+    {
+        return string.Join(cr, list);
+    }
+    public List<string> ToListStr(string str, char splitCahr = ',')
+    {
+        if (str.IsNullOrWhiteSpace()) throw new ArgumentNullException(nameof(str));
+        if (str.IsNullOrWhiteSpace()) return new List<string>();
+        var list = str.Split(splitCahr).ToList();
+        return list ?? throw new Exception("转换结果为空");
     }
 }

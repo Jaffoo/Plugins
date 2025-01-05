@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using TBC.CommonLib;
 using IPluginBase;
 using UnifyBot.Receiver.MessageReceiver;
 
@@ -31,8 +30,8 @@ public class SpeakWell : PluginBase
         {
             if (string.IsNullOrWhiteSpace(words)) return "请输入缩写！";
             string url = "https://api.pearktrue.cn/api/suoxie/?word=" + words;
-            var response = await Tools.GetAsync(url);
-            var data = response.ToJObject();
+            var response = await UnifyBot.Utils.Tools.GetAsync(url);
+            var data = JObject.Parse(response);
             if (data["code"]!.ToString() == "200")
             {
                 return string.Join(",", data["data"] ?? new JArray());
