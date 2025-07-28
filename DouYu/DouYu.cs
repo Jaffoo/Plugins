@@ -23,7 +23,7 @@ public class DouYu : PluginBase
     private async Task SaveLiveStatus(string uid, bool liveStatus)
     {
         var data = await GetConfig("LiveStatus");
-        if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
+        if (data.Contains(uid + "-true;") || data.Contains(uid + "-false;"))
         {
             data = data.Replace(uid + "-true", uid + '-' + liveStatus.ToString().ToLower());
             data = data.Replace(uid + "-false", uid + '-' + liveStatus.ToString().ToLower());
@@ -38,10 +38,10 @@ public class DouYu : PluginBase
     private async Task RemoveLiveStatus(string uid)
     {
         var data = await GetConfig("LiveStatus");
-        if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
+        if (data.Contains(uid + "-true;") || data.Contains(uid + "-false;"))
         {
-            data = data.Replace(uid + "-true", "");
-            data = data.Replace(uid + "-false", "");
+            data = data.Replace(uid + "-true;", "");
+            data = data.Replace(uid + "-false;", "");
             await SaveConfig("LiveStatus", data);
         }
     }
@@ -49,8 +49,7 @@ public class DouYu : PluginBase
     private async Task<bool> UserLiveStatus(string uid)
     {
         var data = await GetConfig("LiveStatus");
-        if (data.Contains(uid + "-true;")) return true;
-        return false;
+        return data.Contains(uid + "-true;");
     }
     public async Task CheckLiveTimer()
     {

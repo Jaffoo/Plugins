@@ -16,14 +16,14 @@ public class DouYin : PluginBase
 
     public DouYin()
     {
-        Task.Run(GetCookie);
+        SetTimer("DouYinCookie", async () => await GetCookie(), x => x.WithName("DouYinCookie").ToRunEvery(1).Days().At(9,0));
         SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
     }
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
     {
         var data = await GetConfig("LiveStatus");
-        if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
+        if (data.Contains(uid + "-true;") || data.Contains(uid + "-false;"))
         {
             data = data.Replace(uid + "-true", uid + '-' + liveStatus.ToString().ToLower());
             data = data.Replace(uid + "-false", uid + '-' + liveStatus.ToString().ToLower());
@@ -38,10 +38,10 @@ public class DouYin : PluginBase
     private async Task RemoveLiveStatus(string uid)
     {
         var data = await GetConfig("LiveStatus");
-        if (data.Contains(uid + "-true") || data.Contains(uid + "-false"))
+        if (data.Contains(uid + "-true;") || data.Contains(uid + "-false;"))
         {
-            data = data.Replace(uid + "-true", "");
-            data = data.Replace(uid + "-false", "");
+            data = data.Replace(uid + "-true;", "");
+            data = data.Replace(uid + "-false;", "");
             await SaveConfig("LiveStatus", data);
         }
     }
@@ -49,8 +49,7 @@ public class DouYin : PluginBase
     private async Task<bool> UserLiveStatus(string uid)
     {
         var data = await GetConfig("LiveStatus");
-        if (data.Contains(uid + "-true;")) return true;
-        return false;
+        return data.Contains(uid + "-true;");
     }
 
     public async Task CheckLiveTimer()
@@ -162,7 +161,7 @@ public class DouYin : PluginBase
             { "Accept", "*/*" },
             { "User-Agent", "PostmanRuntime-ApipostRuntime/1.1.0" },
             { "Connection", "keep-alive" },
-            {"Cookie",await Generatettwid() },
+            { "Cookie", @"ttwid=1%7CtafTnqpDMcicD2oIhPsVFz4SPqUNquS4jQX33cMFgT0%7C1753620790%7Cfc0f94ae18e0c77a135f56667bfb9386abf57db03a88b530802947742cf568ce; Path=/; Domain=bytedance.com; Max-Age=31536000; HttpOnly; Secure" },
         };
     }
     private static string LiveQuery(string uid)
