@@ -16,7 +16,6 @@ public class DouYin : PluginBase
 
     public DouYin()
     {
-        SetTimer("DouYinCookie", async () => await GetCookie(), x => x.WithName("DouYinCookie").ToRunEvery(1).Days().At(9,0));
         SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
     }
 
@@ -161,7 +160,7 @@ public class DouYin : PluginBase
             { "Accept", "*/*" },
             { "User-Agent", "PostmanRuntime-ApipostRuntime/1.1.0" },
             { "Connection", "keep-alive" },
-            { "Cookie", await Generatettwid() },
+            { "Cookie", await GetCookie() },
         };
     }
     private static string LiveQuery(string uid)
@@ -178,10 +177,10 @@ public class DouYin : PluginBase
         query.Append("&web_rid=" + uid);
         return query.ToString();
     }
-    private async Task<string> GetCookie()
+    private async Task<string> GetCookie(bool refresh = false)
     {
         var cookie = await GetConfig("Cookie");
-        if (cookie.IsNullOrWhiteSpace())
+        if (cookie.IsNullOrWhiteSpace() || refresh)
         {
             cookie = await Generatettwid();
             await SaveConfig("Cookie", cookie);
@@ -235,6 +234,7 @@ public class DouYin : PluginBase
         }
         catch (Exception)
         {
+            await GetCookie(true);
             return (new MessageChainBuild().Text("直播查询失败，可能是缓存过期，已刷新，可再次尝试！").Build(), false);
         }
     }
