@@ -161,7 +161,7 @@ public class DouYin : PluginBase
             { "Accept", "*/*" },
             { "User-Agent", "PostmanRuntime-ApipostRuntime/1.1.0" },
             { "Connection", "keep-alive" },
-            { "Cookie", @"ttwid=1%7CtafTnqpDMcicD2oIhPsVFz4SPqUNquS4jQX33cMFgT0%7C1753620790%7Cfc0f94ae18e0c77a135f56667bfb9386abf57db03a88b530802947742cf568ce; Path=/; Domain=bytedance.com; Max-Age=31536000; HttpOnly; Secure" },
+            { "Cookie", await Generatettwid() },
         };
     }
     private static string LiveQuery(string uid)
