@@ -53,7 +53,7 @@ public class DouYin : PluginBase
 
     public async Task CheckLiveTimer()
     {
-        var idsStr = GetConfig("RoomId").Result;
+        var idsStr =await GetConfig("RoomId");
         if (string.IsNullOrWhiteSpace(idsStr)) return;
         var roomList = idsStr.Split(',').ToList();
         foreach (var item in roomList)
