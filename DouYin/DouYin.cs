@@ -168,13 +168,13 @@ public class DouYin : PluginBase
         StringBuilder query = new("?");
         query.Append("aid=6383");
         query.Append("&device_platform=web");
-        query.Append("&enter_from=web_live");
-        query.Append("&cookie_enabled=true");
+        query.Append("&browser_platform=web_live");
         query.Append("&browser_language=zh-CN");
         query.Append("&browser_platform=Win32");
-        query.Append("&browser_name=Chrome");
-        query.Append("&browser_version=109.0.0.0");
+        query.Append("&browser_name=Edge");
+        query.Append("&browser_version=139.0.0.0");
         query.Append("&web_rid=" + uid);
+        query.Append("&a_bogus=" + new Random().Next(1000,1000000));
         return query.ToString();
     }
     private async Task<string> GetCookie(bool refresh = false)
