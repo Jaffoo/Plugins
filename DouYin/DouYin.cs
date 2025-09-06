@@ -21,6 +21,7 @@ public class DouYin : PluginBase
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
     {
+        if (string.IsNullOrWhiteSpace(uid)) return;
         var data = await GetConfig("LiveStatus");
         if (data.Contains(uid + "-true;") || data.Contains(uid + "-false;"))
         {
@@ -53,7 +54,7 @@ public class DouYin : PluginBase
 
     public async Task CheckLiveTimer()
     {
-        var idsStr =await GetConfig("RoomId");
+        var idsStr = await GetConfig("RoomId");
         if (string.IsNullOrWhiteSpace(idsStr)) return;
         var roomList = idsStr.Split(',').ToList();
         foreach (var item in roomList)
@@ -174,7 +175,7 @@ public class DouYin : PluginBase
         query.Append("&browser_name=Edge");
         query.Append("&browser_version=139.0.0.0");
         query.Append("&web_rid=" + uid);
-        query.Append("&a_bogus=" + new Random().Next(1000,1000000));
+        query.Append("&a_bogus=" + new Random().Next(1000, 1000000));
         return query.ToString();
     }
     private async Task<string> GetCookie(bool refresh = false)

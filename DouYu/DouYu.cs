@@ -22,6 +22,7 @@ public class DouYu : PluginBase
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
     {
+        if (string.IsNullOrWhiteSpace(uid)) return;
         var data = await GetConfig("LiveStatus");
         if (data.Contains(uid + "-true;") || data.Contains(uid + "-false;"))
         {
