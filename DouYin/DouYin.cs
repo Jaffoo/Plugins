@@ -1,6 +1,5 @@
 ﻿using IPluginBase;
 using Newtonsoft.Json.Linq;
-using System.ComponentModel;
 using System.Text;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
@@ -17,7 +16,7 @@ public class DouYin : PluginBase
 
     public DouYin()
     {
-        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(1).Minutes());
+        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(3).Minutes());
     }
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
@@ -47,22 +46,9 @@ public class DouYin : PluginBase
         }
     }
 
-    public override string LogPath
-    {
-        get
-        {
-            var path = Path.Combine(base.LogPath, "DouYin.log");
-            if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
-            if (!File.Exists(path)) File.Create(path).Close();
-            return path;
-        }
-        set { }
-    }
     private async Task<bool> UserLiveStatus(string uid)
     {
         var data = await GetConfig("LiveStatus");
-        await SaveConfig("DEBUG1", data.Contains(uid + "-true;").ToString());
-        await SaveConfig("DEBUG2", data);
         return data.Contains(uid + "-true;");
     }
 
@@ -73,19 +59,25 @@ public class DouYin : PluginBase
         var roomList = idsStr.Split(',').ToList();
         foreach (var item in roomList)
         {
-            var (msg, isLive) = await CheckLive(item);
-            var currStatus = await UserLiveStatus(item);
-            if (currStatus == isLive) continue;
-            await SaveConfig("DEBUG0", currStatus.ToString() + ":::::::::" + isLive);
-            await SaveLiveStatus(item, isLive);
-            if (isLive)
+            try
             {
-                var qqs = await GetConfig("Users");
-                var list = ToListStr(qqs).Select(x => long.Parse(x));
-                foreach (var qq in list)
+                var (msg, isLive) = await CheckLive(item);
+                var currStatus = await UserLiveStatus(item);
+                if (currStatus == isLive) continue;
+                await SaveLiveStatus(item, isLive);
+                if (isLive)
                 {
-                    await SendPrivateMsg(qq, msg);
+                    var qqs = await GetConfig("Users");
+                    var list = ToListStr(qqs).Select(x => long.Parse(x));
+                    foreach (var qq in list)
+                    {
+                        await SendPrivateMsg(qq, msg);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                await SendPrivateMsg(1615842006, e.Message);
             }
         }
     }
@@ -176,7 +168,7 @@ public class DouYin : PluginBase
             { "Accept", "*/*" },
             { "User-Agent", "PostmanRuntime-ApipostRuntime/1.1.0" },
             { "Connection", "keep-alive" },
-            { "Cookie", await GetCookie() },
+            { "Cookie", await Generatettwid() },
         };
     }
     private static string LiveQuery(string uid)
@@ -192,16 +184,6 @@ public class DouYin : PluginBase
         query.Append("&web_rid=" + uid);
         query.Append("&a_bogus=" + new Random().Next(1000, 1000000));
         return query.ToString();
-    }
-    private async Task<string> GetCookie(bool refresh = false)
-    {
-        var cookie = await GetConfig("Cookie");
-        if (cookie.IsNullOrWhiteSpace() || refresh)
-        {
-            cookie = await Generatettwid();
-            await SaveConfig("Cookie", cookie);
-        }
-        return cookie;
     }
 
     /// <summary>
@@ -236,22 +218,14 @@ public class DouYin : PluginBase
             msg.Text("主播：" + roomRoot.Fetch("user:nickname") + "正在直播");
             msg.Text("标题：" + roomInfo.Fetch("title"));
             msg.Text("连接：" + $"https://live.douyin.com/{uid}");
-            try
-            {
-                var cover = roomInfo.Fetch<List<string>>("cover:url_list")[0];
-                msg.Text("封面：");
-                msg.ImageByUrl(cover);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            var cover = roomInfo.Fetch<List<string>>("cover:url_list")[0];
+            msg.Text("封面：");
+            msg.ImageByUrl(cover);
             return (msg.Build(), true);
         }
-        catch (Exception)
+        catch
         {
-            await GetCookie(true);
-            return (new MessageChainBuild().Text("直播查询失败，可能是缓存过期，已刷新，可再次尝试！").Build(), false);
+            throw;
         }
     }
 
