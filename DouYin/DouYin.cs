@@ -75,9 +75,9 @@ public class DouYin : PluginBase
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
-                await SendPrivateMsg(1615842006, e.Message);
+                return;
             }
         }
     }
@@ -186,6 +186,18 @@ public class DouYin : PluginBase
         return query.ToString();
     }
 
+    public override string LogPath
+    {
+        get
+        {
+            if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
+            var file = Path.Combine(base.LogPath, "DouYin.log");
+            if (!File.Exists(file)) File.Create(file).Close();
+            return file;
+        }
+        set { }
+    }
+
     /// <summary>
     /// 直播状态
     /// </summary>
@@ -193,13 +205,14 @@ public class DouYin : PluginBase
     /// <returns></returns>
     public async Task<(MessageChain msg, bool isLive)> CheckLive(string uid)
     {
+        var jsonStr = "";
         try
         {
             var url = "https://live.douyin.com/webcast/room/web/enter/" + LiveQuery(uid);
             HttpClient client = new();
             foreach (var item in LiveHeaders().Result)
                 client.DefaultRequestHeaders.Add(item.Key, item.Value);
-            var res = await client.GetStringAsync(url);
+            var res = jsonStr = await client.GetStringAsync(url);
             if (res.Fetch<int>("status_code") != 0) throw new Exception();
             var msg = new MessageChainBuild();
             var roomRoot = res.Fetch("data");
@@ -225,6 +238,7 @@ public class DouYin : PluginBase
         }
         catch
         {
+            await File.AppendAllLinesAsync(LogPath, [jsonStr]);
             throw;
         }
     }
