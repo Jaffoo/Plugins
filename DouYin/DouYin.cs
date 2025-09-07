@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using IPluginBase;
+﻿using IPluginBase;
+using Newtonsoft.Json.Linq;
+using System.ComponentModel;
 using System.Text;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
@@ -46,9 +47,22 @@ public class DouYin : PluginBase
         }
     }
 
+    public override string LogPath
+    {
+        get
+        {
+            var path = Path.Combine(base.LogPath, "DouYin.log");
+            if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
+            if (!File.Exists(path)) File.Create(path).Close();
+            return path;
+        }
+        set { }
+    }
     private async Task<bool> UserLiveStatus(string uid)
     {
         var data = await GetConfig("LiveStatus");
+        await SaveConfig("DEBUG1", data.Contains(uid + "-true;").ToString());
+        await SaveConfig("DEBUG2", data);
         return data.Contains(uid + "-true;");
     }
 
@@ -62,6 +76,7 @@ public class DouYin : PluginBase
             var (msg, isLive) = await CheckLive(item);
             var currStatus = await UserLiveStatus(item);
             if (currStatus == isLive) continue;
+            await SaveConfig("DEBUG0", currStatus.ToString() + ":::::::::" + isLive);
             await SaveLiveStatus(item, isLive);
             if (isLive)
             {

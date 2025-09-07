@@ -55,7 +55,7 @@ public class ChatGPT : PluginBase
     {
         get
         {
-            var path = base.LogPath + "ChatGPT.log";
+            var path = Path.Combine(base.LogPath, "ChatGPT.log");
             if (!Directory.Exists(base.LogPath)) Directory.CreateDirectory(base.LogPath);
             if (!File.Exists(path)) File.Create(path).Close();
             return path;
@@ -152,7 +152,7 @@ public class ChatGPT : PluginBase
         {
             if (string.IsNullOrWhiteSpace(SecretKey)) return "请配置密钥或输入设置密钥+你的密钥";
             if (string.IsNullOrWhiteSpace(question)) return "请输入问题！";
-            var url = "https://api.chatanywhere.com.cn/v1/chat/completions";
+            var url = "https://api.chatanywhere.tech/v1/chat/completions";
             var objs = new List<object>();
             if (LastMsg.TryGetValue(qq, out List<object>? value)) objs.AddRange(value);
             objs.Add(new
