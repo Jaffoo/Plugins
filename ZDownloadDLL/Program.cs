@@ -87,7 +87,7 @@ internal class Program
             }
             return new KeyValuePair<string, string>();
         }).ToList();
-        var last = list.OrderByDescending(x => x.Key.Max()).ThenByDescending(x => x.Key.Length);
+        var last = list.OrderByDescending(x => x.Key).ThenByDescending(x => x.Key.Length);
         return last.FirstOrDefault().Value;
     }
     private static async Task<Stream> GetPkgStream(string pkgName)
