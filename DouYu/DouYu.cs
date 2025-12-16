@@ -103,7 +103,7 @@ public class DouYu : PluginBase
         if (string.IsNullOrWhiteSpace(text)) return;
         if (text.Length > 4 && text[..4] == "斗鱼直播")
         {
-            var roomId = text[4..];
+            var roomId = text[4..].Trim();
             var (msg, _) = await CheckLive(roomId);
             await fmr.SendMessage(msg);
         }
@@ -118,7 +118,7 @@ public class DouYu : PluginBase
         }
         if (text.Length > 4 && text[..4] == "斗鱼通知")
         {
-            var qq = text[4..];
+            var qq = text[4..].Trim();
             var qqs = await GetConfig("Users");
             var list = qqs.IsNullOrWhiteSpace() ? [] : ToListStr(qqs);
             if (!list.Contains(qq))
@@ -136,7 +136,7 @@ public class DouYu : PluginBase
         }
         if (text.Length > 4 && text[..4] == "斗鱼关注")
         {
-            var roomId = text[4..];
+            var roomId = text[4..].Trim();
             var rooms = await GetConfig("RoomId");
             List<string> list = rooms.IsNullOrWhiteSpace() ? [] : ToListStr(rooms);
             if (list.Count == 0 || !list.Contains(roomId))
