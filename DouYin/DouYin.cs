@@ -170,7 +170,7 @@ public class DouYin : PluginBase
             var liveStatus = room["status"]!.ToString().ToInt();
             if (liveStatus != 2)
             {
-                msg.Text("" + anchor["nickname"] + "暂未开播");
+                msg.Text(anchor["nickname"] + "暂未开播");
                 return (msg.Build(), false);
             }
             msg.Text("主播：" + anchor["nickname"]);
