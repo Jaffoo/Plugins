@@ -188,7 +188,12 @@ public class DouYin : PluginBase
         }
     }
 
-    public async Task<JObject?> GetRoomInfo(string uid)
+    /// <summary>
+    /// 获取直播间信息
+    /// </summary>
+    /// <param name="uid"></param>
+    /// <returns></returns>
+    public static async Task<JObject?> GetRoomInfo(string uid)
     {
         var url = "https://live.douyin.com/" + uid;
         var response = await new HttpClient().GetAsync(url);
@@ -205,7 +210,7 @@ public class DouYin : PluginBase
             if (!scriptText.Contains("roomInfo")) continue;
             if (!scriptText.Contains(@"c:[")) continue;
             var jsonStr = scriptText.Replace("self.__pace_f.push(", "");
-            jsonStr = jsonStr.Substring(0, jsonStr.Length - 1);
+            jsonStr = jsonStr[..^1];
             jsonStr = jsonStr.Replace(@"\n", "");
             var arr = JsonConvert.DeserializeObject<JArray>(jsonStr);
             if (arr == null || arr.Count <= 1) continue;
