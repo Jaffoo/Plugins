@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="1.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Bilibili\Bilibili.csproj" />
     <ProjectReference Include="..\ChatGPT\ChatGPT.csproj" />
     <ProjectReference Include="..\CookBook\CookBook.csproj" />

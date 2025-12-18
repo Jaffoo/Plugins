@@ -9,7 +9,7 @@ namespace Test
         static async Task Main()
         {
             var dy = new DouYin.DouYin();
-            var res = await dy.CheckLive("Uliiiiiiii");
+            var (msg, isLive) = await dy.CheckLive("cctv.com");
             Console.ReadKey();
         }
     }

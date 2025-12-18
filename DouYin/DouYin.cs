@@ -1,6 +1,7 @@
-﻿using IPluginBase;
+﻿using AngleSharp.Html.Parser;
+using IPluginBase;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Text;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 using UnifyBot.Utils;
@@ -98,12 +99,12 @@ public class DouYin : PluginBase
         }
         if (text.Length > 4 && text[..4] == "抖音直播")
         {
-            var uid = text[4..];
+            var uid = text[4..].Trim();
             await fmr.SendMessage((await CheckLive(uid)).msg);
         }
         if (text.Length > 4 && text[..4] == "抖音关注")
         {
-            var uid = text[4..];
+            var uid = text[4..].Trim();
             var rooms = await GetConfig("RoomId");
             List<string> list = rooms.IsNullOrWhiteSpace() ? [] : ToListStr(rooms);
             if (list.Count == 0 || !list.Contains(uid))
@@ -121,7 +122,7 @@ public class DouYin : PluginBase
         }
         if (text.Length > 4 && text[..4] == "抖音通知")
         {
-            var uid = text[4..];
+            var uid = text[4..].Trim();
             var users = await GetConfig("Users");
             List<string> list = users.IsNullOrWhiteSpace() ? [] : ToListStr(users);
             if (list.Count == 0 || !list.Contains(uid))
@@ -136,54 +137,6 @@ public class DouYin : PluginBase
             }
             await SaveConfig("Users", ListToStr(list));
         }
-    }
-
-    private Dictionary<string, string> Headers()
-    {
-        return new Dictionary<string, string> {
-            { "accept","application/json" },
-            { "accept-language","zh-CN,zh;q=0.9" },
-            { "cache-control","no-cache" },
-            { "pragma","no-cache" },
-            { "referer","https://www.iesdouyin.com/" },
-            { "sec-fetch-mode","cors" },
-            { "sec-fetch-site","same-site" },
-            { "x-requested-with","XMLHttpRequest" },
-            { "Accept", "*/*" },
-            { "User-Agent", "PostmanRuntime-ApipostRuntime/1.1.0" },
-            { "Connection", "keep-alive" },
-        };
-    }
-    private async Task<Dictionary<string, string>> LiveHeaders()
-    {
-        return new Dictionary<string, string> {
-            { "accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3" },
-            { "accept-language", "zh-CN,zh;q=0.9" },
-            { "cache-control", "no-cache" },
-            { "pragma", "no-cache" },
-            { "sec-fetch-mode", "navigate" },
-            { "sec-fetch-site", "same-site" },
-            { "sec-fetch-user", "?1" },
-            { "upgrade-insecure-requests", "1" },
-            { "Accept", "*/*" },
-            { "User-Agent", "PostmanRuntime-ApipostRuntime/1.1.0" },
-            { "Connection", "keep-alive" },
-            { "Cookie", await Generatettwid() },
-        };
-    }
-    private static string LiveQuery(string uid)
-    {
-        StringBuilder query = new("?");
-        query.Append("aid=6383");
-        query.Append("&device_platform=web");
-        query.Append("&browser_platform=web_live");
-        query.Append("&browser_language=zh-CN");
-        query.Append("&browser_platform=Win32");
-        query.Append("&browser_name=Edge");
-        query.Append("&browser_version=139.0.0.0");
-        query.Append("&web_rid=" + uid);
-        query.Append("&a_bogus=" + new Random().Next(1000, 1000000));
-        return query.ToString();
     }
 
     public override string LogPath
@@ -208,30 +161,22 @@ public class DouYin : PluginBase
         var jsonStr = "";
         try
         {
-            var url = "https://live.douyin.com/webcast/room/web/enter/" + LiveQuery(uid);
-            HttpClient client = new();
-            foreach (var item in LiveHeaders().Result)
-                client.DefaultRequestHeaders.Add(item.Key, item.Value);
-            var res = jsonStr = await client.GetStringAsync(url);
-            if (res.Fetch<int>("status_code") != 0) throw new Exception();
             var msg = new MessageChainBuild();
-            var roomRoot = res.Fetch("data");
-            if (roomRoot.IsNullOrWhiteSpace())
+            var roomInfo = await GetRoomInfo(uid);
+            if (roomInfo == null) return (msg.Build(), false);
+            var room = roomInfo["room"];
+            var anchor = roomInfo["anchor"];
+            if (room == null || anchor == null) return (msg.Build(), false);
+            var liveStatus = room["status"]!.ToString().ToInt();
+            if (liveStatus != 2)
             {
-                msg.Text("该抖音用户未开通直播间");
+                msg.Text("" + anchor["nickname"] + "暂未开播");
                 return (msg.Build(), false);
             }
-            var liveStatus = roomRoot.Fetch<int>("room_status");
-            if (liveStatus != 0)
-            {
-                msg.Text(res.Fetch("data:user:nickname") + "暂未开播");
-                return (msg.Build(), false);
-            }
-            var roomInfo = roomRoot.Fetch<JArray>("data")[0].ToString();
-            msg.Text("主播：" + roomRoot.Fetch("user:nickname") + "正在直播");
-            msg.Text("标题：" + roomInfo.Fetch("title"));
+            msg.Text("主播：" + anchor["nickname"]);
+            msg.Text("标题：" + room["title"]);
             msg.Text("连接：" + $"https://live.douyin.com/{uid}");
-            var cover = roomInfo.Fetch<List<string>>("cover:url_list")[0];
+            var cover = JArray.FromObject(room["cover"]!["url_list"]!)[0].ToString();
             msg.Text("封面：");
             msg.ImageByUrl(cover);
             return (msg.Build(), true);
@@ -243,34 +188,45 @@ public class DouYin : PluginBase
         }
     }
 
-    /// <summary>
-    /// 生成ttwid
-    /// </summary>
-    /// <returns></returns>
-    public async Task<string> Generatettwid()
+    public async Task<JObject?> GetRoomInfo(string uid)
     {
-        try
+        var url = "https://live.douyin.com/" + uid;
+        var response = await new HttpClient().GetAsync(url);
+        var content = await response.Content.ReadAsStringAsync();
+
+        var parser = new HtmlParser();
+        var document = parser.ParseDocument(content);
+
+        var scripts = document.QuerySelectorAll("script[nonce]");
+        foreach (var script in scripts)
         {
-            var url = "https://ttwid.bytedance.com/ttwid/union/register/";
-            string body = "{\"region\": \"cn\",\"aid\": 1768,\"needFid\": false,\"service\": \"www.ixigua.com\",\"migrate_info\": {\t\"ticket\": \"\",\t\"source\": \"node\"},\"cbUrlProtocol\": \"https\",\"union\": true\n}";
-            HttpClient client = new();
-            foreach (var item in Headers())
-                client.DefaultRequestHeaders.Add(item.Key, item.Value);
-            var response = await client.PostAsync(url, new StringContent(body));
-            var res = await response.Content.ReadAsStringAsync();
-            if (res.Fetch<int>("status_code") == 0)
-            {
-                var resHeaders = response.Headers.GetValues("Set-Cookie");
-                if (resHeaders.Any())
-                    return resHeaders.First();
-            }
-            return "";
+            var scriptText = script.TextContent;
+            if (scriptText.IsNullOrWhiteSpace()) continue;
+            if (!scriptText.Contains("roomInfo")) continue;
+            if (!scriptText.Contains(@"c:[")) continue;
+            var jsonStr = scriptText.Replace("self.__pace_f.push(", "");
+            jsonStr = jsonStr.Substring(0, jsonStr.Length - 1);
+            jsonStr = jsonStr.Replace(@"\n", "");
+            var arr = JsonConvert.DeserializeObject<JArray>(jsonStr);
+            if (arr == null || arr.Count <= 1) continue;
+            var cStr = arr[1].ToString();
+            var cObj = JsonConvert.DeserializeObject<JObject>("{" + cStr + "}");
+            if (cObj == null) continue;
+            var cArr = cObj["c"];
+            if (cArr == null || cArr.Count() < 4) continue;
+            var obj = cArr[3];
+            if (obj == null) continue;
+            var state = obj["state"];
+            if (state == null) continue;
+            var roomStore = state["roomStore"];
+            if (roomStore == null) continue;
+            var roomInfo = roomStore["roomInfo"];
+            if (roomInfo == null) continue;
+            return JObject.FromObject(roomInfo);
         }
-        catch
-        {
-            return "";
-        }
+        return null;
     }
+
     public string ListToStr<T>(List<T> list, string cr = ",")
     {
         return string.Join(cr, list);
