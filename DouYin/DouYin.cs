@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
-using UnifyBot.Utils;
 
 namespace DouYin;
 
@@ -17,7 +16,7 @@ public class DouYin : PluginBase
 
     public DouYin()
     {
-        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(3).Minutes());
+        SetTimer("DouYin", async () => await CheckLiveTimer(), x => x.WithName("DouYin").ToRunEvery(2).Minutes());
     }
 
     private async Task SaveLiveStatus(string uid, bool liveStatus)
@@ -158,7 +157,6 @@ public class DouYin : PluginBase
     /// <returns></returns>
     public async Task<(MessageChain msg, bool isLive)> CheckLive(string uid)
     {
-        var jsonStr = "";
         try
         {
             var msg = new MessageChainBuild();
@@ -181,9 +179,9 @@ public class DouYin : PluginBase
             msg.ImageByUrl(cover);
             return (msg.Build(), true);
         }
-        catch
+        catch(Exception e)
         {
-            await File.AppendAllLinesAsync(LogPath, [jsonStr]);
+            await File.AppendAllLinesAsync(LogPath, [e.Message]);
             throw;
         }
     }
