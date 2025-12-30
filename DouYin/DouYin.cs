@@ -2,6 +2,7 @@
 using IPluginBase;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 using UnifyBot.Message.Chain;
 using UnifyBot.Receiver.MessageReceiver;
 
@@ -179,7 +180,7 @@ public class DouYin : PluginBase
             msg.ImageByUrl(cover);
             return (msg.Build(), true);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             await File.AppendAllLinesAsync(LogPath, [e.Message]);
             throw;
@@ -206,7 +207,10 @@ public class DouYin : PluginBase
             var scriptText = script.TextContent;
             if (scriptText.IsNullOrWhiteSpace()) continue;
             if (!scriptText.Contains("roomInfo")) continue;
-            if (!scriptText.Contains(@"c:[")) continue;
+            var pattern = @"\b([a-z]+):\[";
+            var re = new Regex(pattern);
+            var matchs = re.Matches(scriptText);
+            if (matchs.Count <= 0) continue;
             var jsonStr = scriptText.Replace("self.__pace_f.push(", "");
             jsonStr = jsonStr[..^1];
             jsonStr = jsonStr.Replace(@"\n", "");
@@ -215,7 +219,8 @@ public class DouYin : PluginBase
             var cStr = arr[1].ToString();
             var cObj = JsonConvert.DeserializeObject<JObject>("{" + cStr + "}");
             if (cObj == null) continue;
-            var cArr = cObj["c"];
+            var header = matchs[0].Value[0].ToString();
+            var cArr = cObj[header];
             if (cArr == null || cArr.Count() < 4) continue;
             var obj = cArr[3];
             if (obj == null) continue;
