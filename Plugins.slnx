@@ -1,0 +1,13 @@
+<Solution>
+  <Project Path="BaseUsing/BaseUsing.csproj" />
+  <Project Path="Bilibili/Bilibili.csproj" />
+  <Project Path="ChatGPT/ChatGPT.csproj" />
+  <Project Path="CookBook/CookBook.csproj" />
+  <Project Path="DouYin/DouYin.csproj" />
+  <Project Path="DouYu/DouYu.csproj" />
+  <Project Path="Gold/Gold.csproj" />
+  <Project Path="Oli/Oil.csproj" />
+  <Project Path="SixtySeeWorld/SixtySeeWorld.csproj" />
+  <Project Path="SpeakWell/SpeakWell.csproj" />
+  <Project Path="Test/Test.csproj" />
+</Solution>
